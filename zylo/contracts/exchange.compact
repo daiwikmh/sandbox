@@ -1,0 +1,238 @@
+pragma language_version 0.26;
+
+import CompactStandardLibrary;
+
+export ledger listings: MerkleTree<12, Bytes<32>>;
+export ledger listingCount: Counter;
+export ledger catalog: Map<Bytes<32>, Listing>;
+export ledger enclaveKeys: Set<Bytes<32>>;
+export ledger jobs: Map<Bytes<32>, Job>;
+export ledger grantsSpent: Set<Bytes<32>>;
+export ledger earningsClaimed: Set<Bytes<32>>;
+export ledger accrued: Map<Bytes<32>, Uint<128>>;
+export ledger governor: Bytes<32>;
+
+struct Listing {
+  ownerCommitment: Bytes<32>;
+  datasetRoot: Bytes<32>;
+  termsHash: Bytes<32>;
+  price: Uint<64>;
+  rows: Uint<64>;
+  jobClasses: Uint<8>;
+  budget: Uint<64>;
+}
+
+struct Job {
+  escrow: Uint<128>;
+  specCommitment: Bytes<32>;
+  payoutCommitment: Bytes<32>;
+  resultCommitment: Bytes<32>;
+  settled: Boolean;
+}
+
+struct Attestation {
+  nonce: JubjubPoint;
+  key: JubjubPoint;
+  message: Bytes<32>;
+}
+
+witness ownerSecret(): Bytes<32>;
+witness buyerSecret(): Bytes<32>;
+witness governorSecret(): Bytes<32>;
+witness attestationNonce(): JubjubPoint;
+witness attestationScalar(): Field;
+
+constructor(governorCommitment: Bytes<32>) {
+  governor = disclose(governorCommitment);
+}
+
+circuit listingLeaf(datasetId: Bytes<32>, price: Uint<64>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "zylo:listing:v1"), datasetId, priceTag(price)]
+  );
+}
+
+circuit priceTag(price: Uint<64>): Bytes<32> {
+  return persistentHash<Vector<1, Field>>([price as Field]);
+}
+
+circuit datasetIdOf(datasetRoot: Bytes<32>, secret: Bytes<32>): Bytes<32> {
+  return persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "zylo:dataset:v1"), secret, datasetRoot]
+  );
+}
+
+circuit verifyAttestation(key: JubjubPoint, message: Bytes<32>): [] {
+  const nonce = attestationNonce();
+  const s = attestationScalar() as JubjubScalar;
+  const challenge = transientHash<Attestation>(
+    Attestation { nonce: nonce, key: key, message: message }
+  ) as JubjubScalar;
+  assert(ecMulGenerator(s) == ecAdd(nonce, ecMul(key, challenge)), "bad attestation");
+}
+
+circuit enclaveFingerprint(key: JubjubPoint): Bytes<32> {
+  return persistentHash<JubjubPoint>(key);
+}
+
+export circuit registerDataset(
+  datasetRoot: Bytes<32>,
+  termsHash: Bytes<32>,
+  price: Uint<64>,
+  rows: Uint<64>,
+  jobClasses: Uint<8>,
+  budget: Uint<64>
+): [] {
+  assert(price > 0, "price must be positive");
+  assert(rows > 0, "dataset must have rows");
+  assert(jobClasses > 0, "at least one job class");
+  assert(budget > 0, "budget must allow at least one job");
+
+  const secret = ownerSecret();
+  const datasetId = datasetIdOf(datasetRoot, secret);
+  assert(!catalog.member(disclose(datasetId)), "dataset already registered");
+
+  const ownerCommitment = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:owner:v1"), secret]
+  );
+
+  catalog.insert(disclose(datasetId), disclose(Listing {
+    ownerCommitment: ownerCommitment,
+    datasetRoot: datasetRoot,
+    termsHash: termsHash,
+    price: price,
+    rows: rows,
+    jobClasses: jobClasses,
+    budget: budget
+  }));
+  listings.insert(disclose(listingLeaf(datasetId, price)));
+  listingCount.increment(1);
+}
+
+export circuit requestJob(
+  datasetId: Bytes<32>,
+  price: Uint<64>,
+  path: MerkleTreePath<12, Bytes<32>>,
+  specCommitment: Bytes<32>,
+  escrow: ShieldedCoinInfo
+): [] {
+  assert(listings.checkRoot(disclose(merkleTreePathRoot<12, Bytes<32>>(path))), "unknown listing root");
+  assert(path.leaf == listingLeaf(datasetId, price), "path does not match listing");
+  assert(escrow.value >= price as Uint<128>, "escrow below listed price");
+
+  const listing = catalog.lookup(disclose(datasetId));
+  assert(listing.budget > 0, "dataset query budget exhausted");
+
+  const secret = buyerSecret();
+  const jobId = persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "zylo:job:v1"), secret, specCommitment]
+  );
+  assert(!jobs.member(disclose(jobId)), "job already exists");
+
+  const payoutCommitment = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:accrue:v1"), datasetId]
+  );
+
+  catalog.insert(disclose(datasetId), disclose(Listing {
+    ownerCommitment: listing.ownerCommitment,
+    datasetRoot: listing.datasetRoot,
+    termsHash: listing.termsHash,
+    price: listing.price,
+    rows: listing.rows,
+    jobClasses: listing.jobClasses,
+    budget: (listing.budget - 1) as Uint<64>
+  }));
+
+  receiveShielded(disclose(escrow));
+  jobs.insert(disclose(jobId), disclose(Job {
+    escrow: escrow.value,
+    specCommitment: specCommitment,
+    payoutCommitment: payoutCommitment,
+    resultCommitment: pad(32, ""),
+    settled: false
+  }));
+}
+
+export circuit grantAccess(jobId: Bytes<32>, enclaveKey: JubjubPoint): [] {
+  assert(jobs.member(disclose(jobId)), "no such job");
+  assert(enclaveKeys.member(disclose(enclaveFingerprint(enclaveKey))), "enclave not allowlisted");
+
+  verifyAttestation(enclaveKey, jobId);
+
+  const grantNullifier = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:grant:v1"), jobId]
+  );
+  assert(!grantsSpent.member(disclose(grantNullifier)), "access already granted");
+  grantsSpent.insert(disclose(grantNullifier));
+}
+
+export circuit settleJob(
+  jobId: Bytes<32>,
+  resultCommitment: Bytes<32>,
+  enclaveKey: JubjubPoint
+): [] {
+  assert(jobs.member(disclose(jobId)), "no such job");
+  const job = jobs.lookup(disclose(jobId));
+  assert(!job.settled, "job already settled");
+  assert(enclaveKeys.member(disclose(enclaveFingerprint(enclaveKey))), "enclave not allowlisted");
+
+  const grantNullifier = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:grant:v1"), jobId]
+  );
+  assert(grantsSpent.member(disclose(grantNullifier)), "access was never granted");
+
+  verifyAttestation(enclaveKey, resultCommitment);
+
+  const previous = accrued.member(disclose(job.payoutCommitment))
+    ? accrued.lookup(disclose(job.payoutCommitment))
+    : 0 as Uint<128>;
+
+  accrued.insert(disclose(job.payoutCommitment), disclose((previous + job.escrow) as Uint<128>));
+  jobs.insert(disclose(jobId), disclose(Job {
+    escrow: job.escrow,
+    specCommitment: job.specCommitment,
+    payoutCommitment: job.payoutCommitment,
+    resultCommitment: resultCommitment,
+    settled: true
+  }));
+}
+
+export circuit claimEarnings(
+  datasetRoot: Bytes<32>,
+  coin: QualifiedShieldedCoinInfo,
+  amount: Uint<128>
+): [] {
+  const secret = ownerSecret();
+  const datasetId = datasetIdOf(datasetRoot, secret);
+  const payoutCommitment = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:accrue:v1"), datasetId]
+  );
+
+  assert(accrued.member(disclose(payoutCommitment)), "nothing accrued");
+  const balance = accrued.lookup(disclose(payoutCommitment));
+  assert(amount > 0, "amount must be positive");
+  assert(balance >= amount, "amount exceeds accrued balance");
+
+  const claimNullifier = persistentHash<Vector<3, Bytes<32>>>(
+    [pad(32, "zylo:claim:v1"), secret, datasetRoot]
+  );
+  assert(!earningsClaimed.member(disclose(claimNullifier)), "earnings already claimed");
+
+  accrued.insert(disclose(payoutCommitment), disclose((balance - amount) as Uint<128>));
+  earningsClaimed.insert(disclose(claimNullifier));
+
+  sendShielded(
+    disclose(coin),
+    left<ZswapCoinPublicKey, ContractAddress>(ownPublicKey()),
+    disclose(amount)
+  );
+}
+
+export circuit allowlistEnclave(enclaveKey: JubjubPoint): [] {
+  const secret = governorSecret();
+  const commitment = persistentHash<Vector<2, Bytes<32>>>(
+    [pad(32, "zylo:governor:v1"), secret]
+  );
+  assert(commitment == governor, "not the governor");
+  enclaveKeys.insert(disclose(enclaveFingerprint(enclaveKey)));
+}

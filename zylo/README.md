@@ -1,142 +1,322 @@
-# Zylo Dark Pool
+<div align="center">
 
-> A sealed-bid exchange where orders are placed, held and matched without their
-> price, side or size ever becoming public — now built on Midnight with Compact
-> and zero-knowledge proofs.
+<img src="app/public/logo.png" alt="" width="72" height="72" />
 
-Confidentiality comes from zero-knowledge circuits: the order book's terms live
-in private witnesses, and the ledger holds only hiding commitments, spent
-nullifiers, a count, and one clearing price.
+# Zylo
 
-This is **Level 1** of the Midnight Builder Challenge: the smallest slice of the
-dark pool that still carries its thesis — a sealed-order commitment contract with
-a public book size, hidden order terms, and a single public clearing price. The
-design is in `DARKPOOL.md`; the roadmap through the remaining levels is in
-`PLAN.md`.
+### They buy the answer. Never the data.
 
-## Contract Address
+*A confidential data exchange on Midnight — Compact circuits, zero-knowledge proofs, and attested compute*
 
-| Network | Address |
-|---------|---------|
-| Preview | _not deployed yet_ |
-| Preprod | _not deployed yet_ |
+![Midnight](https://img.shields.io/badge/Midnight-testnet-7165ed)
+![Compact](https://img.shields.io/badge/Compact-0.26%20%2F%20toolchain%200.34.0-252527)
+![Circuits](https://img.shields.io/badge/circuits-6-5140c5)
+![Tests](https://img.shields.io/badge/tests-72%20passing-1e9e68)
+![Status](https://img.shields.io/badge/status-not%20deployed-d98324)
+![License](https://img.shields.io/badge/license-none%20committed-d7d5d1)
 
-Deployment needs a funded testnet wallet; the address is pasted here after the
-first deploy.
+</div>
 
-## What This Does
+---
 
-`contracts/darkpool.compact` is a confidential order primitive with three
-circuits:
+## What is Zylo?
 
-- **`placeOrder(side, limitPrice, size)`** — the trader commits to an order. The
-  terms are private circuit inputs; only a hiding hash of them reaches the
-  ledger, and a public counter ticks up so the book's *size* is known while its
-  *contents* are not.
-- **`settle(side, limitPrice, size, clearingPrice)`** — the trader re-supplies
-  the order's private terms and proves, in zero knowledge, that they match a live
-  commitment, have not been settled before, and cross the clearing price. Only a
-  nullifier and the clearing price become public.
-- **`lastClearingPrice()`** — reads back the one figure a batch auction is
-  allowed to reveal.
+Data marketplaces sell a download and trust you to behave. The moment a buyer has the rows,
+the seller has lost the data, the leverage, and any say in what happens next. So the
+valuable datasets never get listed, and the ones that do are the ones nobody minds leaking.
 
-A batch auction on top of this would collect many `placeOrder` commitments,
-choose one uniform `clearingPrice` off-chain, and call `settle` for each crossing
-order — no order ever revealed, only the print.
+Zylo never hands the data over. You publish a dataset that is encrypted in your browser
+before a byte leaves the machine; only a Merkle commitment, a schema and a price reach the
+chain. A buyer pays for a *computation*. An enclave whose signing key is allowlisted
+on-chain verifies the commitment, decrypts in memory, runs a bounded query, signs the
+answer and forgets the key. You claim your tDUST later, in a transaction nothing links back
+to the job that earned it.
 
-## Privacy Model
+**Three ways in:**
 
-**PUBLIC** (on the ledger, anyone can read):
+- **Publish** — encrypt and list a dataset; the offer is public, the contents never are.
+- **Compute** — buy an aggregate over someone else's data without seeing a row.
+- **Earn** — claim accrued tDUST unlinkably, whenever you choose.
 
-- `orderCount` — how many sealed orders have ever been placed
-- `orderCommitments` — one hiding hash per order; reveals nothing about its terms
-- `settled` — nullifiers of orders already matched (prevents double-fill)
-- `lastPrint` — the clearing price of the most recent settlement, and the only
-  price this contract ever discloses
+> The differentiator is not encryption — anyone can encrypt a file. It is that the chain
+> enforces *which* bytes were computed on, *which* enclave was allowed to see them, that
+> payment happened, and that none of it can be correlated. The data never becomes a
+> download, because a download was never what was sold.
 
-**PRIVATE** (circuit inputs and witness, never written in the clear):
+---
 
-- `side`, `limitPrice`, `size` of every order
-- `orderSecret()` — the trader's per-order secret; without it a commitment cannot
-  be reproduced, so it also gates who may settle an order
+## Features
 
-**PROVED without revealing:**
+### Contract — `contracts/exchange.compact`
 
-- *placeOrder* — "I committed to a well-formed order (`size > 0`, `price > 0`)"
-  without exposing side, price or size.
-- *settle* — "this fill corresponds to a real prior commitment, has not been
-  settled before, and crosses the clearing price" without exposing which order it
-  was or what its terms were.
+- **Sealed listings** — a dataset is a Merkle root plus a hiding commitment to its owner.
+  The catalog is public so the market is browsable; the rows, the owner and the buyer are not.
+- **Blind job targeting** — `requestJob` takes the dataset as a *private* input and proves a
+  Merkle path into the listings tree plus `escrow >= price`. The ledger learns a job exists
+  and what it escrowed, never which dataset it points at.
+- **In-circuit attestation** — key release is gated on a Schnorr signature over Jubjub,
+  verified inside the circuit against an allowlisted enclave key.
+- **Unlinkable earnings** — settlement accrues to a commitment; the owner claims in a
+  separate transaction with its own nullifier.
+- **Query budgets** — every listing carries a budget decremented on each job. Exhaustion
+  requires a new listing, capping how much any one dataset can be probed.
 
-An on-chain observer sees the number of resting orders, a list of opaque hashes,
-a list of spent nullifiers, and the last clearing price. They cannot see any
-order's side, price or size, cannot link an order to a settlement, and cannot
-tell whether two commitments came from the same trader.
+| Circuit | Proves | Reaches the ledger |
+|---|---|---|
+| `registerDataset` | the owner holds a secret binding this Merkle root | listing leaf, public terms, budget |
+| `requestJob` | escrow covers *some* listed dataset's price | job id, escrow, spec commitment |
+| `grantAccess` | an allowlisted enclave signed this job id | grant nullifier |
+| `settleJob` | that enclave signed this result, after a grant | result commitment, accrual |
+| `claimEarnings` | the claimant owns the dataset that accrued | payout nullifier, coin out |
+| `allowlistEnclave` | the caller is the governor | enclave fingerprint |
 
-## Tech Stack
+### Enclave — `enclave/`
 
-- **Midnight** network (Preview / Preprod testnets)
-- **Compact** language — `pragma language_version 0.26`, compiler `0.34.0`
-- `@midnight-ntwrk/compact-runtime` `0.19.0` for the test harness
-- **Node.js v22**, **Docker** (proof server), **Vitest**
+- **Root verification before decryption** — a blob whose Merkle root does not match the
+  on-chain commitment aborts before any plaintext exists.
+- **A bounded query language** — counts, aggregates, grouped aggregates. No arbitrary code,
+  no row-level output, ever.
+- **Anti-exfiltration limits** — minimum group size 25, at most 64 groups, 8 KB result cap.
+  Groups below the minimum are dropped rather than reported.
+- **Optional differential privacy** — Laplace noise at a caller-supplied epsilon, with
+  per-aggregate sensitivity.
+- **Key hygiene** — dataset key and plaintext zeroed in a `finally` block.
+- **Honest attestation** — off Nitro it reports `attested: false` and says not to allowlist it.
 
-## Prerequisites
+### App — `app/`
 
-- Node.js **v22** (`nvm install 22`)
-- Docker Desktop, running
-- The Compact toolchain:
+- Client-side chunking, SHA-256 Merkle commitment and AES-256-GCM encryption.
+- Lace wallet connection through the Midnight DApp connector.
+- Exportable secrets, because losing them means losing your earnings.
+- A photographic, editorial interface: a full-bleed landing with an interactive scanner
+  canvas, then a sidebar dashboard. Self-hosted DM Sans, no utility CSS framework.
+- Verified at 1440px, 390px and 320px with no horizontal overflow.
 
-  ```bash
-  curl --proto '=https' --tlsv1.2 -LsSf \
-    https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh
-  compact update
-  compact --version          # expect the dev-tools version
-  compact compile --version  # expect 0.34.0
-  ```
+---
 
-- The proof server image (needed for deploy, not for tests):
+## Architecture
 
-  ```bash
-  docker pull midnightntwrk/proof-server:8.1.0
-  docker run -p 6300:6300 midnightntwrk/proof-server:8.1.0 midnight-proof-server -v
-  ```
+```mermaid
+flowchart TB
+    subgraph Browser
+        U[Upload] -->|chunk, hash, encrypt| S[Sealed blob + Merkle root]
+        S -->|ECIES to enclave key| W[Wrapped dataset key]
+        C[Compute] -->|job spec| P[/api/enclave proxy/]
+    end
+
+    subgraph Midnight
+        EX[exchange.compact]
+        EX --- L1[listings · catalog · budget]
+        EX --- L2[jobs · grantsSpent]
+        EX --- L3[accrued · earningsClaimed]
+        EX --- L4[enclaveKeys · governor]
+    end
+
+    subgraph Enclave
+        E[Nitro enclave]
+        E -->|verify root| D[Decrypt in memory]
+        D --> R[Bounded runner]
+        R -->|Schnorr sign| SIG[result commitment]
+    end
+
+    S -->|root only| EX
+    P --> E
+    W --> E
+    SIG -->|settleJob| EX
+    EX -->|sendShielded| OWNER[Owner claims tDUST]
+```
+
+| Component | Role | Backed by |
+|---|---|---|
+| `contracts/exchange.compact` | consent, integrity, escrow, unlinkability | Compact 0.26, ledger 9 |
+| `crypto/` | chunking, Merkle, AES-GCM, ECIES key wrap | Web Crypto + Jubjub |
+| `enclave/` | attested compute and the bounded runner | Node, AWS Nitro |
+| `app/` | publish, browse, compute, claim | Next.js 16, React 19 |
+
+### What Midnight enforces — and what it does not
+
+**Enforced cryptographically:** that the enclave computed on exactly the committed bytes;
+that only an allowlisted enclave key could unlock them; that escrow covered the listed
+price; that a job settles once and earnings are claimed once; that jobs, payouts and owners
+cannot be correlated on chain.
+
+**Not enforced:** that the computation was *correct*. That rests on hardware attestation,
+not a proof — a broken TEE is a broken result. And an adversarial buyer can still learn
+something through results; the bounded DSL, group minimums, caps and budgets narrow that
+channel, they do not close it.
+
+**The governor is trusted** to allowlist only keys backed by a genuine attestation of a
+reproducible build. That assumption narrows with published measurements and a multisig. It
+does not disappear.
+
+---
+
+## The bounded query language
+
+| Job class | Shape | Guard |
+|---|---|---|
+| `count` | rows matching an optional predicate | selection ≥ 25 rows |
+| `aggregate` | `sum` / `mean` / `min` / `max` over one column | selection ≥ 25 rows |
+| `grouped` | an aggregate per group | ≥ 25 rows per group, ≤ 64 groups |
+
+Every result is JSON capped at 8 KB. A job outside the listing's permitted classes is
+refused before decryption.
+
+## Circuit cost
+
+Measured, not estimated — `managed/exchange/keys/` after `npm run compile`:
+
+| Circuit | Proving key |
+|---|---|
+| `allowlistEnclave` | 4.97 MB |
+| `grantAccess` | 5.47 MB |
+| `settleJob` | 5.47 MB |
+| `registerDataset` | 9.50 MB |
+| `requestJob` | 9.53 MB |
+| `claimEarnings` | 9.56 MB |
+
+48 MB total, downloaded once and cached. SHA-256 dominates: a single `persistentHash` costs
+~2.8 MB while a full Schnorr verification over Jubjub costs 687 KB. `sendShielded` is the
+heaviest primitive at ~10 MB, which is why `claimEarnings` is the largest circuit.
+
+---
+
+## Project structure
+
+```
+zylo/
+├── contracts/exchange.compact      # the one contract, six circuits
+├── managed/exchange/               # compiled circuits + proving keys (committed)
+├── crypto/
+│   ├── merkle.ts                   # 1 MiB chunking, domain-separated Merkle root
+│   ├── envelope.ts                 # AES-256-GCM seal/open, root checked on open
+│   ├── keywrap.ts                  # ECIES to the enclave's Jubjub key
+│   └── attestation.ts              # Schnorr over Jubjub, shared with the circuit
+├── enclave/
+│   ├── enclave.ts                  # job lifecycle, key hygiene
+│   ├── runner.ts                   # bounded DSL, k-anonymity, Laplace noise
+│   ├── jobspec.ts                  # job classes and limits
+│   ├── attest.ts                   # Nitro measurement, boot keypair
+│   └── server.ts                   # HTTP surface
+├── tests/
+│   ├── exchange.test.ts            # 32 contract tests
+│   ├── enclave.test.ts             # 16 runner and enclave tests
+│   ├── crypto.test.ts              # 12 crypto tests
+│   ├── e2e.test.ts                 # dataset -> enclave -> contract, end to end
+│   └── exchange-simulator.ts       # offline ledger harness
+├── app/                            # Next.js 16 + Capacitor
+│   ├── app/page.tsx                # landing
+│   ├── app/(app)/                  # datasets · upload · catalog · compute · earnings · settings
+│   ├── app/api/enclave/            # server-side proxy to the enclave
+│   ├── app/styles/                 # landing.css · dashboard.css · app.css
+│   ├── app/src/components/         # landing, dashboard shell, auth, ui primitives
+│   └── app/src/midnight/           # wallet, providers, secrets, local store
+├── REFACTOR.md                     # the plan this was built from, annotated
+└── spikes/RESULTS.md               # Phase 0 measurements
+```
+
+---
 
 ## Setup
 
 ```bash
-git clone <this-repo>
-cd zylo
+# 1. Toolchain
 nvm use 22
+curl --proto '=https' --tlsv1.2 -LsSf \
+  https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh
+compact update 0.34
+
+# 2. Contract, crypto and enclave
+cd zylo
 npm install
-npm run compile        # compact compile -> managed/darkpool/
+npm run compile        # -> managed/exchange/
+npm test               # 61 tests
+
+# 3. Enclave (second terminal)
+npm run enclave        # http://localhost:8088
+
+# 4. App (third terminal)
+cd app
+npm install
+cp .env.example .env.local
+npm run dev            # http://localhost:3000
 ```
 
-`npm run compile` regenerates `managed/darkpool/` — the TypeScript contract, the
-ZK circuits (`placeOrder`, `settle`, `lastClearingPrice`) and their proving and
-verifying keys.
+| Variable | Scope | What it does |
+|---|---|---|
+| `NEXT_PUBLIC_NETWORK_ID` | browser | Midnight network to target. Defaults to `TestNet`. |
+| `NEXT_PUBLIC_INDEXER_URL` | browser | GraphQL indexer for reading chain state. |
+| `NEXT_PUBLIC_INDEXER_WS_URL` | browser | Indexer subscriptions. |
+| `NEXT_PUBLIC_PROOF_SERVER_URL` | browser | Proof server. Required to submit any transaction. |
+| `NEXT_PUBLIC_ZK_CONFIG_URL` | browser | Where `managed/exchange/` is served from. |
+| `NEXT_PUBLIC_EXCHANGE_ADDRESS` | browser | The deployed contract. Unset keeps settlement local. |
+| `ENCLAVE_URL` | server | Where the enclave is reachable. Never exposed to the browser. |
 
-## Run Tests
+---
 
-```bash
-npm test
-```
+## Security & trust
 
-12 tests in `tests/darkpool.test.ts`, covering:
+- **Keys never leave the browser.** The dataset key is generated with
+  `crypto.getRandomValues`, used for AES-256-GCM, and wrapped to the enclave's Jubjub public
+  key via ECIES. It is never transmitted, stored or logged in the clear.
+- **Your secrets are yours to lose.** `ownerSecret` and `buyerSecret` live in browser storage
+  and are exportable from Settings. Losing them means losing the ability to claim earnings.
+  Nobody can recover them for you — that is the design.
+- **The enclave host is assumed hostile.** It can refuse or delay jobs. It cannot read
+  plaintext, forge a result signature, or learn the dataset key.
+- **Off Nitro the enclave reports `attested: false`** and says not to allowlist it. The
+  governor is responsible for honouring that.
+- **Unaudited testnet software.** Do not use it with data you care about.
 
-- **circuit logic** — the buy/sell crossing rule, rejection of orders that were
-  never placed, rejection of malformed orders
-- **state transitions** — `orderCount` and `orderCommitments` growth, `lastPrint`
-  moving from `none` to the settled price, and an order being unsettleable twice
-- **privacy** — the ledger exposes only counts, commitments, nullifiers and the
-  print; the raw ledger state contains none of the order's side/price/size; the
-  commitment matches only the exact terms and secret; and a trader who cannot
-  reconstruct an order cannot settle it
+---
 
-## Initial Idea
+## Status
 
-_[LEAVE PLACEHOLDER — fill in manually]_
+| Claim | Verified? | How |
+|---|---|---|
+| Six circuits compile | **yes** | `npm run compile`, toolchain 0.34.0 |
+| 61 contract/crypto/enclave tests pass | **yes** | `npm test` |
+| 11 app tests pass | **yes** | `cd app && npm test` |
+| Enclave signature verifies inside the circuit | **yes** | `tests/e2e.test.ts` |
+| Tampered blob is rejected | **yes** | `tests/enclave.test.ts`, and over HTTP |
+| Query budget decrements and blocks | **yes** | `tests/exchange.test.ts` |
+| Ledger holds no data, key or secret | **yes** | four assertions in `tests/e2e.test.ts` |
+| Enclave serves jobs over HTTP | **yes** | driven against `npm run enclave` |
+| App builds and serves every route | **yes** | `npm run build`, all 8 routes 200 |
+| Landing and dashboard render | **yes** | scanner, pins, tabs and sidebar served over HTTP |
+| `receiveShielded` executes | **yes** | simulator |
+| `sendShielded` round trip | **no** | needs a node; the offline simulator cannot assign `mt_index` |
+| Deployed to a testnet | **no** | see below |
+| Runs in a real Nitro enclave | **no** | code written; reports unattested off Nitro |
+| Proving in a browser | **no** | never measured; `claimEarnings` is a ~10 MB key |
+| Governor multisig | **no** | single governor commitment today |
+| Blob storage backend | **no** | blobs live in `sessionStorage`; a reload loses them |
+| Mobile (Capacitor) build | **no** | layout verified at 390px and 320px; never run on a device |
 
-## Screenshots
+### Why it is not deployed
 
-_[LEAVE PLACEHOLDER — add `compact compile` output and the deployed contract
-address]_
+This contract targets **ledger 9** (toolchain 0.34.0). The published `midnight-js` — 4.1.1 at
+the time of writing — pins `compact-runtime` 0.16.0, `ledger-v8` and `onchain-runtime-v3`.
+A ledger-9 contract cannot be deployed with it.
+
+The contract *does* compile unchanged on toolchain 0.31.1 / language 0.23 — same six
+circuits, identical proving key sizes — needing only `as JubjubScalar` to become `as Field`.
+But 0.23 has no scalar type and no modular reduction in casts, so a full-width Fiat-Shamir
+challenge fails to decode into the curve's scalar field. Making it fit means truncating the
+challenge and weakening the signature. That trade was not worth a compatibility win against
+an SDK that will ship ledger-9 support anyway, so the secure construction was kept.
+
+---
+
+## License
+
+No LICENSE file is committed yet.
+
+---
+
+<div align="center">
+
+Built with **[Compact](https://docs.midnight.network/)** on **[Midnight](https://midnight.network/)** ·
+**[Next.js](https://nextjs.org/)** · **[AWS Nitro Enclaves](https://aws.amazon.com/ec2/nitro/nitro-enclaves/)**
+
+</div>

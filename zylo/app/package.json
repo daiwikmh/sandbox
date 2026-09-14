@@ -1,0 +1,47 @@
+{
+  "name": "zylo-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build --webpack",
+    "start": "next start",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit",
+    "cap:sync": "node node_modules/@capacitor/cli/bin/capacitor sync",
+    "cap:ios": "node node_modules/@capacitor/cli/bin/capacitor open ios",
+    "cap:android": "node node_modules/@capacitor/cli/bin/capacitor open android",
+    "mobile:setup": "npm run cap:sync && echo 'Mobile platforms synced. Now run: npm run cap:ios OR npm run cap:android'",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.0.1",
+    "@capacitor/cli": "^8.0.1",
+    "@capacitor/core": "^8.0.1",
+    "@capacitor/ios": "^8.0.1",
+    "@midnight-ntwrk/compact-runtime": "^0.19.0",
+    "@midnight-ntwrk/dapp-connector-api": "^4.0.1",
+    "@midnight-ntwrk/midnight-js-contracts": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-http-client-proof-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-level-private-state-provider": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-network-id": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-types": "^4.1.1",
+    "next": "16.1.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^3.2.7",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.1",
+    "jsdom": "^30.0.1",
+    "typescript": "^5",
+    "vitest": "^3.2.7"
+  }
+}
