@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../",
+  "sources": ["h.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;MAKA,AAAA,MAEC;;OAAA;;;;GACA;EARD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;GAQC;ECRD,AAAA,iBAAA;mEAAA;;;EDKA,AAAA,SAEC,CAFqB,GAAc,EAAE,IAAe,EAAE,KAAc;sCACpB,GAAC,MAAM,IAAE,OAAO,KAAG;GACnE;;;;;;;;;;;;;;;;;;;;;;;EAFD,AAAA,MAEC;;;;UAFqB,GAAc;UAAE,IAAe;UAAE,KAAc;;;;;;;;oCAA/C,GAAc,EAAE,IAAe,EAAE,KAAc;GAEpE;;;;"
+}

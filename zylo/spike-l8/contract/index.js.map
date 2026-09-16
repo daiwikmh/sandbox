@@ -1,0 +1,8 @@
+{
+  "version": 3,
+  "file": "index.js",
+  "sourceRoot": "../../",
+  "sources": ["t.compact", "compiler/standard-library.compact"],
+  "names": [],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;EAAA;;;;;;;;;;;;;;;;MAUA,AAAA,MAOC;;;;;cAPqB,IAAe;cAAE,KAAc;;;;;;;;;;;;;;;;;;yCAA/B,IAAe,+BAAE,KAAc;;;;;;;mEAA/B,IAAe,EAAE,KAAc;;;OAOpD;;;;GACA;EAlBD;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAGA;;;;;;;;;yEAA0B;;;;;;;GAezB;EClBD,AAAA,iBAAA;mEAAA;;;EAAA,AAAA,SAAA,KAAA;4CAAA,KAAA;;;EAAA,AAAA,SAAA,KAAA;4CAAA,KAAA;;;EAAA,AAAA,kBAAA;qDAAA;;;EDOA,AAAA,OAAsB;;0DAAtB,IAAsB;;;;;;;;;;;;;;GAAA;EACtB,AAAA,OAA4B;;0DAA5B,IAA4B;;;;;;;GAAA;EAE5B,AAAA,SAOC,4BAPqB,IAAe,EAAE,KAAc;UAC7C,GAAU;UACV,GAAmB;UACnB,GAAkE,8BAAtB,GAAC,MAAM,IAAE,OAAO,KAAG;UAC/D,GAA2B;;;;;mBAAvB,GAAC;iEACW,GAAC;wDAAW,GAAC;sEAAQ,IAAE,EAAE,GAAC;;UAChD,KAAE;IAAF;;;;;;;;;;6FAAA,KAAE;;;;wEAAA;;GACH;;;;;;;;;;;;;;;;;;;;;;;;;;;;;IAdD;qCAAA;;;;;;;;;;;0GAA0B;KAAA;;;;;;;;;;;;"
+}
