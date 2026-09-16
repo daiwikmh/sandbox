@@ -34,12 +34,12 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
           <Link className="dash-wordmark" href="/" aria-label="Zylo home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="mark" src="/logo.png" alt="" width={26} height={26} />
-            zylo<span>exchange</span>
+            zylo<span>vault</span>
             <i aria-hidden="true" />
           </Link>
 
           <div className="sidebar-context">
-            <span className="eyebrow">CONFIDENTIAL EXCHANGE</span>
+            <span className="eyebrow">CONFIDENTIAL vault</span>
             <strong>Data desk</strong>
             <span className="network-dot">
               <i /> {PROVIDER_CONFIG.networkId}
@@ -95,7 +95,7 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
               <strong>{PROVIDER_CONFIG.networkId}</strong>
             </div>
             <div className={`header-fact${CONTRACT_CONFIGURED ? '' : ' muted'}`}>
-              <span>EXCHANGE</span>
+              <span>vault</span>
               <strong>
                 {CONTRACT_CONFIGURED ? shortHex(PROVIDER_CONFIG.contract, 6, 4) : 'not deployed'}
               </strong>
@@ -114,8 +114,8 @@ export const DashboardShell = ({ children }: { children: ReactNode }) => {
             <section className="dashboard-alert" role="status">
               <span>!</span>
               <p>
-                No exchange contract configured. Datasets are encrypted and computed for real, but
-                settlement is kept local until NEXT_PUBLIC_EXCHANGE_ADDRESS is set.
+                No vault contract configured. Datasets are encrypted and computed for real, but
+                settlement is kept local until NEXT_PUBLIC_vault_ADDRESS is set.
               </p>
             </section>
           )}

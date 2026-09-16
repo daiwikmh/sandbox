@@ -311,7 +311,7 @@ Make sure to set up your environment variables:
 ```bash
 # .env.local — see app/.env.example for the full list
 NEXT_PUBLIC_PROOF_SERVER_URL=http://YOUR_LOCAL_IP:6300
-NEXT_PUBLIC_EXCHANGE_ADDRESS=
+NEXT_PUBLIC_vault_ADDRESS=
 ENCLAVE_URL=http://127.0.0.1:8088
 ```
 

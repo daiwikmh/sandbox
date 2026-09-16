@@ -1,10 +1,10 @@
 {
-  "name": "zylo-exchange",
+  "name": "zylo-vault",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "compile": "compact compile contracts/exchange.compact managed/exchange",
+    "compile": "compact compile contracts/vault.compact managed/vault",
     "test": "vitest run",
     "test:watch": "vitest",
     "enclave": "tsx enclave/server.ts",

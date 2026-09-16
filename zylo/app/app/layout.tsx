@@ -1,6 +1,6 @@
 export const metadata = {
   title: 'Zylo',
-  description: 'A confidential data exchange on Midnight.',
+  description: 'A confidential data vault on Midnight.',
   icons: { icon: '/favicon.png', apple: '/apple-touch-icon.png' },
 };
 

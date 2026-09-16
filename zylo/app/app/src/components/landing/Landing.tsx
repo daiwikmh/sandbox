@@ -5,6 +5,8 @@ import '../../../styles/landing.css';
 import '../../../styles/app.css';
 import { initLanding } from './landing-script';
 
+const SCENE = { base: 'yard', mesh: 'yard-mesh', xray: 'yard-xray' } as const;
+
 const STAGES = [
   { name: 'Publish', description: 'Commit a dataset on Midnight before a single byte is readable.', position: 'issue' },
   { name: 'Escrow', description: 'A buyer locks tDUST against a listing without naming which one.', position: 'verify' },
@@ -19,7 +21,7 @@ const APPLICATIONS = [
     audience: 'FOR DATA OWNERS',
     title: 'The data stays put. The value moves.',
     text: 'Encrypt a dataset in your own browser and list only its shape and its price. Buyers pay for an answer; the rows never leave the enclave, and the ledger never sees them.',
-    image: 'vault',
+    image: SCENE.base,
     label: 'DATASET / MERKLE COMMITMENT',
     facts: [
       ['Held', 'Encrypted chunks, one Merkle root'],
@@ -33,7 +35,7 @@ const APPLICATIONS = [
     audience: 'FOR BUYERS & ANALYSTS',
     title: 'An answer nobody has to be trusted for.',
     text: 'The enclave recomputes the Merkle root before it decrypts anything. A swapped or truncated blob aborts the job, so the result you buy is bound to exactly the bytes that were published.',
-    image: 'vault-mesh',
+    image: SCENE.mesh,
     label: 'ENCLAVE / SCHNORR OVER JUBJUB',
     facts: [
       ['Evidence', 'Signed result commitment'],
@@ -47,7 +49,7 @@ const APPLICATIONS = [
     audience: 'FOR PRIVACY TEAMS',
     title: 'A result is not a download.',
     text: 'Counts, aggregates and grouped aggregates — never a row. Minimum group sizes, a hard result cap and a per-listing query budget are what stop a buyer reconstructing a dataset one narrow question at a time.',
-    image: 'vault',
+    image: SCENE.base,
     label: 'RUNNER / K-ANONYMITY ENFORCED',
     facts: [
       ['Floor', '25 rows minimum per group'],
@@ -79,7 +81,7 @@ export function Landing() {
           <a className="wordmark" href="#home" aria-label="Zylo home">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img className="mark" src="/logo.png" alt="" width="28" height="28" />
-            zylo<span>exchange</span>
+            zylo<span>vault</span>
             <svg viewBox="0 0 16 16" aria-hidden="true">
               <path d="M8 1 15 8 8 15 1 8Z" />
             </svg>
@@ -102,7 +104,7 @@ export function Landing() {
       <main id="main">
         <section id="home" className="hero scanner" data-scanner aria-label="Interactive data landscape">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="map-photo" src="/images/vault.webp" width={1376} height={768} alt="A secure vault, standing in for a dataset nobody can read" fetchPriority="high" />
+          <img className="map-photo" src={`/images/${SCENE.base}.webp`} width={1376} height={768} alt="A container terminal at night, standing in for datasets nobody can read" fetchPriority="high" />
           <canvas className="scan-canvas" aria-hidden="true" />
           <div className="hero-heading">
             <h1>
@@ -149,7 +151,7 @@ export function Landing() {
 
         <section className="asset-landscape scanner" data-scanner id="platform" aria-labelledby="landscape-title">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="map-photo" src="/images/vault.webp" width={1376} height={768} loading="lazy" alt="The proof path, annotated" />
+          <img className="map-photo" src={`/images/${SCENE.base}.webp`} width={1376} height={768} loading="lazy" alt="The proof path, annotated" />
           <canvas className="scan-canvas" aria-hidden="true" />
           <div className="pixel-edge" aria-hidden="true">
             <i /><i /><i /><i />
@@ -194,7 +196,7 @@ export function Landing() {
                 <i /><i /><i />
               </div>
               <strong>zylo</strong>
-              <span>EXCHANGE</span>
+              <span>vault</span>
             </div>
             <span className="connection-label top-left">Merkle commitment</span>
             <span className="connection-label bottom-left">Shielded escrow</span>
@@ -284,7 +286,7 @@ export function Landing() {
               <span className="small-label">
                 <i className="status-dot" /> INTERACTIVE DEMO
               </span>
-              <h3>Zylo Data Exchange</h3>
+              <h3>Zylo Data vault</h3>
               <p>Walk the proof path here · Run a real job on the dashboard.</p>
               <div className="demo-asset-mark" aria-hidden="true">
                 <svg viewBox="0 0 200 200">
@@ -375,7 +377,7 @@ export function Landing() {
 
         <section className="closing scanner" data-scanner aria-labelledby="closing-title">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="map-photo" src="/images/vault.webp" alt="" width={1376} height={768} loading="lazy" />
+          <img className="map-photo" src={`/images/${SCENE.base}.webp`} alt="" width={1376} height={768} loading="lazy" />
           <canvas className="scan-canvas" aria-hidden="true" />
           <div className="closing-content">
             <h2 id="closing-title">
@@ -391,9 +393,9 @@ export function Landing() {
       <footer className="site-footer">
         <div className="footer-top">
           <a className="wordmark" href="#home">
-            zylo<span>exchange</span>
+            zylo<span>vault</span>
           </a>
-          <p>Confidential data exchange, proved on Midnight.</p>
+          <p>Confidential data vault, proved on Midnight.</p>
           <div>
             <a href="#assets">What it does</a>
             <a href="#platform">Proof path</a>

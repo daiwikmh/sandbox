@@ -37,7 +37,7 @@ export default function SettingsPage() {
           <KV k="Proof server" v={<Mono>{PROVIDER_CONFIG.proofServer}</Mono>} />
           <KV k="ZK artifacts" v={<Mono>{PROVIDER_CONFIG.zkConfig}</Mono>} />
           <KV
-            k="Exchange"
+            k="vault"
             v={
               CONTRACT_CONFIGURED ? (
                 <Mono>{shortHex(PROVIDER_CONFIG.contract, 10, 8)}</Mono>

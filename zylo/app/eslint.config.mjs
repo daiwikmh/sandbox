@@ -12,7 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Generated ZK artifacts copied from managed/exchange.
+    // Generated ZK artifacts copied from managed/vault.
     "public/zk/**",
   ]),
 ]);

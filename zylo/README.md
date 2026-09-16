@@ -6,16 +6,41 @@
 
 ### They buy the answer. Never the data.
 
-*A confidential data exchange on Midnight — Compact circuits, zero-knowledge proofs, and attested compute*
+*A confidential data vault on Midnight — Compact circuits, zero-knowledge proofs, and attested compute*
 
-![Midnight](https://img.shields.io/badge/Midnight-testnet-7165ed)
-![Compact](https://img.shields.io/badge/Compact-0.26%20%2F%20toolchain%200.34.0-252527)
+![Midnight](https://img.shields.io/badge/Midnight-preview%20%C2%B7%20ledger%20v8-7165ed)
+![Compact](https://img.shields.io/badge/Compact-0.23%20%2F%20toolchain%200.31.1-252527)
 ![Circuits](https://img.shields.io/badge/circuits-6-5140c5)
 ![Tests](https://img.shields.io/badge/tests-72%20passing-1e9e68)
-![Status](https://img.shields.io/badge/status-not%20deployed-d98324)
+![Status](https://img.shields.io/badge/status-deployed%20on%20preview-1e9e68)
 ![License](https://img.shields.io/badge/license-none%20committed-d7d5d1)
 
+**Live on Midnight preview**
+
+[`1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882`](https://explorer.preview.midnight.network/contracts/1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882)
+
 </div>
+
+---
+
+## Deployed contract
+
+The vault is live on Midnight **preview**. All six verifier keys are published on chain and
+the governor commitment is fixed.
+
+| | |
+|---|---|
+| Address | [`1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882`](https://explorer.preview.midnight.network/contracts/1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882) |
+| Deploy tx | [`11c63a2b42f580431d7f6190e07beccb36d32f6d2fb732a89e66c8f254da1fe6`](https://explorer.preview.midnight.network/transactions/11c63a2b42f580431d7f6190e07beccb36d32f6d2fb732a89e66c8f254da1fe6) |
+| Block | 891,017 |
+| Network | `preview` — node 1.x, ledger v8 |
+| Explorer | [Night Scan](https://explorer.preview.midnight.network/contracts/1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882) |
+
+To point the app at it, put the address in `app/.env.local`:
+
+```bash
+NEXT_PUBLIC_vault_ADDRESS=1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882
+```
 
 ---
 
@@ -47,7 +72,7 @@ to the job that earned it.
 
 ## Features
 
-### Contract — `contracts/exchange.compact`
+### Contract — `contracts/vault.compact`
 
 - **Sealed listings** — a dataset is a Merkle root plus a hiding commitment to its owner.
   The catalog is public so the market is browsable; the rows, the owner and the buyer are not.
@@ -105,7 +130,7 @@ flowchart TB
     end
 
     subgraph Midnight
-        EX[exchange.compact]
+        EX[vault.compact]
         EX --- L1[listings · catalog · budget]
         EX --- L2[jobs · grantsSpent]
         EX --- L3[accrued · earningsClaimed]
@@ -128,7 +153,7 @@ flowchart TB
 
 | Component | Role | Backed by |
 |---|---|---|
-| `contracts/exchange.compact` | consent, integrity, escrow, unlinkability | Compact 0.26, ledger 9 |
+| `contracts/vault.compact` | consent, integrity, escrow, unlinkability | Compact 0.23, ledger v8 |
 | `crypto/` | chunking, Merkle, AES-GCM, ECIES key wrap | Web Crypto + Jubjub |
 | `enclave/` | attested compute and the bounded runner | Node, AWS Nitro |
 | `app/` | publish, browse, compute, claim | Next.js 16, React 19 |
@@ -164,7 +189,7 @@ refused before decryption.
 
 ## Circuit cost
 
-Measured, not estimated — `managed/exchange/keys/` after `npm run compile`:
+Measured, not estimated — `managed/vault/keys/` after `npm run compile`:
 
 | Circuit | Proving key |
 |---|---|
@@ -185,8 +210,8 @@ heaviest primitive at ~10 MB, which is why `claimEarnings` is the largest circui
 
 ```
 zylo/
-├── contracts/exchange.compact      # the one contract, six circuits
-├── managed/exchange/               # compiled circuits + proving keys (committed)
+├── contracts/vault.compact      # the one contract, six circuits
+├── managed/vault/               # compiled circuits + proving keys (committed)
 ├── crypto/
 │   ├── merkle.ts                   # 1 MiB chunking, domain-separated Merkle root
 │   ├── envelope.ts                 # AES-256-GCM seal/open, root checked on open
@@ -199,11 +224,11 @@ zylo/
 │   ├── attest.ts                   # Nitro measurement, boot keypair
 │   └── server.ts                   # HTTP surface
 ├── tests/
-│   ├── exchange.test.ts            # 32 contract tests
+│   ├── vault.test.ts            # 32 contract tests
 │   ├── enclave.test.ts             # 16 runner and enclave tests
 │   ├── crypto.test.ts              # 12 crypto tests
 │   ├── e2e.test.ts                 # dataset -> enclave -> contract, end to end
-│   └── exchange-simulator.ts       # offline ledger harness
+│   └── vault-simulator.ts       # offline ledger harness
 ├── app/                            # Next.js 16 + Capacitor
 │   ├── app/page.tsx                # landing
 │   ├── app/(app)/                  # datasets · upload · catalog · compute · earnings · settings
@@ -224,12 +249,12 @@ zylo/
 nvm use 22
 curl --proto '=https' --tlsv1.2 -LsSf \
   https://github.com/midnightntwrk/compact/releases/latest/download/compact-installer.sh | sh
-compact update 0.34
+compact update 0.31.1   # ledger v8 / runtime 0.16 — what preview runs
 
 # 2. Contract, crypto and enclave
 cd zylo
 npm install
-npm run compile        # -> managed/exchange/
+npm run compile        # -> managed/vault/
 npm test               # 61 tests
 
 # 3. Enclave (second terminal)
@@ -239,17 +264,19 @@ npm run enclave        # http://localhost:8088
 cd app
 npm install
 cp .env.example .env.local
-npm run dev            # http://localhost:3000
+echo "NEXT_PUBLIC_vault_ADDRESS=1951fd9ca36d14c1458c27c80d2f0b7d2d7437c187c875e4d1d28acd9a215882" >> .env.local
+npm run dev            # http://localhost:3000 (falls back to 3001 if taken)
 ```
 
 | Variable | Scope | What it does |
 |---|---|---|
-| `NEXT_PUBLIC_NETWORK_ID` | browser | Midnight network to target. Defaults to `TestNet`. |
+| `NEXT_PUBLIC_NETWORK_ID` | browser | Midnight network to target. Defaults to `preview`. |
 | `NEXT_PUBLIC_INDEXER_URL` | browser | GraphQL indexer for reading chain state. |
 | `NEXT_PUBLIC_INDEXER_WS_URL` | browser | Indexer subscriptions. |
 | `NEXT_PUBLIC_PROOF_SERVER_URL` | browser | Proof server. Required to submit any transaction. |
-| `NEXT_PUBLIC_ZK_CONFIG_URL` | browser | Where `managed/exchange/` is served from. |
-| `NEXT_PUBLIC_EXCHANGE_ADDRESS` | browser | The deployed contract. Unset keeps settlement local. |
+| `NEXT_PUBLIC_ZK_CONFIG_URL` | browser | Where `managed/vault/` is served from. |
+| `NEXT_PUBLIC_vault_ADDRESS` | browser | The deployed contract. Unset keeps settlement local. |
+| `NEXT_PUBLIC_NODE_URL` | browser | Node RPC. Defaults to `https://rpc.preview.midnight.network`. |
 | `ENCLAVE_URL` | server | Where the enclave is reachable. Never exposed to the browser. |
 
 ---
@@ -274,37 +301,58 @@ npm run dev            # http://localhost:3000
 
 | Claim | Verified? | How |
 |---|---|---|
-| Six circuits compile | **yes** | `npm run compile`, toolchain 0.34.0 |
+| Six circuits compile | **yes** | `npm run compile`, toolchain 0.31.1 |
 | 61 contract/crypto/enclave tests pass | **yes** | `npm test` |
 | 11 app tests pass | **yes** | `cd app && npm test` |
 | Enclave signature verifies inside the circuit | **yes** | `tests/e2e.test.ts` |
 | Tampered blob is rejected | **yes** | `tests/enclave.test.ts`, and over HTTP |
-| Query budget decrements and blocks | **yes** | `tests/exchange.test.ts` |
+| Query budget decrements and blocks | **yes** | `tests/vault.test.ts` |
 | Ledger holds no data, key or secret | **yes** | four assertions in `tests/e2e.test.ts` |
 | Enclave serves jobs over HTTP | **yes** | driven against `npm run enclave` |
 | App builds and serves every route | **yes** | `npm run build`, all 8 routes 200 |
 | Landing and dashboard render | **yes** | scanner, pins, tabs and sidebar served over HTTP |
 | `receiveShielded` executes | **yes** | simulator |
 | `sendShielded` round trip | **no** | needs a node; the offline simulator cannot assign `mt_index` |
-| Deployed to a testnet | **no** | see below |
+| Deployed to a testnet | **yes** | preview, block 891,017 — [tx](https://explorer.preview.midnight.network/transactions/11c63a2b42f580431d7f6190e07beccb36d32f6d2fb732a89e66c8f254da1fe6) |
+| App wired to the deployed contract | **partly** | only `/deploy` calls the chain; the other pages still read `localStorage` |
 | Runs in a real Nitro enclave | **no** | code written; reports unattested off Nitro |
 | Proving in a browser | **no** | never measured; `claimEarnings` is a ~10 MB key |
 | Governor multisig | **no** | single governor commitment today |
 | Blob storage backend | **no** | blobs live in `sessionStorage`; a reload loses them |
 | Mobile (Capacitor) build | **no** | layout verified at 390px and 320px; never run on a device |
 
-### Why it is not deployed
+### How it reaches ledger v8
 
-This contract targets **ledger 9** (toolchain 0.34.0). The published `midnight-js` — 4.1.1 at
-the time of writing — pins `compact-runtime` 0.16.0, `ledger-v8` and `onchain-runtime-v3`.
-A ledger-9 contract cannot be deployed with it.
+Midnight **preview** runs node 1.x, which is **ledger v8** (`protocolVersion 1000000`). That
+fixes the whole toolchain: ledger v8 means `compact-runtime` 0.16, which means compiler
+0.31.1, which means language 0.23. The published `midnight-js` for that era is 4.1.1.
 
-The contract *does* compile unchanged on toolchain 0.31.1 / language 0.23 — same six
-circuits, identical proving key sizes — needing only `as JubjubScalar` to become `as Field`.
-But 0.23 has no scalar type and no modular reduction in casts, so a full-width Fiat-Shamir
-challenge fails to decode into the curve's scalar field. Making it fit means truncating the
-challenge and weakening the signature. That trade was not worth a compatibility win against
-an SDK that will ship ledger-9 support anyway, so the secure construction was kept.
+Language 0.23 has no Jubjub scalar type, no `%` operator, and its narrowing casts
+range-assert rather than truncate — so the full-width Fiat-Shamir challenge cannot be reduced
+into the curve's scalar field *inside* the circuit.
+
+The construction is unchanged anyway, because the enclave already reduces off-circuit
+(`reduceScalar` in `crypto/attestation.ts`). The contract therefore does not *perform* the
+reduction — it **verifies** one. The challenge and its quotient arrive as witnesses and the
+circuit pins them:
+
+```compact
+assert((quotient as Uint<8>) <= 8, "challenge quotient out of range");
+assert(hash == challenge + quotient * (6554...4199 as Field), "challenge not reduced");
+```
+
+`(challenge, quotient)` is unique: any competing pair needs
+`(k − k') · Fr ≡ c' − c (mod p)`, but `|(k − k') · Fr| ≤ 8·Fr < p` and `|c' − c| < Fr < p`, so
+both sides sit in `(−p, p)` and equality mod `p` forces equality as integers. It is complete
+because `k = ⌊h/Fr⌋ ≤ 8` for every `h < p`, since `p < 9·Fr`.
+
+Same Schnorr scheme, same challenge value, **no truncation and no weakened signature** — and
+the enclave's signing code did not change. Cost: two extra witnesses.
+
+> One caveat: `challenge < Fr` is enforced by the `ecMul` gadget rather than by an explicit
+> assert — `Uint` maxes out at 248 bits and `Fr ≈ 2^251.7`. Verified at the runtime level
+> (out-of-range scalars are rejected), not inside the proving circuit. Making it explicit
+> needs a two-limb range check.
 
 ---
 

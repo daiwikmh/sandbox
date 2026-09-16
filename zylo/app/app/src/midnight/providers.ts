@@ -1,5 +1,5 @@
 import {
-  EXCHANGE_ADDRESS,
+  vault_ADDRESS,
   INDEXER_URL,
   INDEXER_WS_URL,
   NETWORK_ID,
@@ -8,7 +8,7 @@ import {
   ZK_CONFIG_URL,
 } from '../utils/constants';
 
-export const CONTRACT_CONFIGURED = EXCHANGE_ADDRESS.length > 0;
+export const CONTRACT_CONFIGURED = vault_ADDRESS.length > 0;
 
 // Lace speaks hex over the connector.
 const toHex = (bytes: Uint8Array): string =>
@@ -41,7 +41,7 @@ export const PROVIDER_CONFIG = {
   proofServer: PROOF_SERVER_URL,
   node: NODE_URL,
   zkConfig: ZK_CONFIG_URL,
-  contract: EXCHANGE_ADDRESS,
+  contract: vault_ADDRESS,
 } as const;
 
 export async function connectProviders(api: {
@@ -88,9 +88,9 @@ export async function connectProviders(api: {
     proofProvider: httpClientProofProvider(PROOF_SERVER_URL, zkConfigProvider),
     zkConfigProvider,
     privateStateProvider: levelPrivateStateProvider({
-      privateStateStoreName: 'zylo-exchange',
+      privateStateStoreName: 'zylo-vault',
       accountId: keys.shieldedCoinPublicKey.slice(0, 16),
-      privateStoragePasswordProvider: async () => 'zylo-local-state',
+      privateStoragePasswordProvider: async () => 'Zylo-Local-State-Store',
     }),
     walletProvider: {
       getCoinPublicKey: () => keys.shieldedCoinPublicKey,

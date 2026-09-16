@@ -15,7 +15,7 @@ export const PROOF_SERVER_URL =
 
 export const ZK_CONFIG_URL = process.env.NEXT_PUBLIC_ZK_CONFIG_URL ?? '/zk';
 
-export const EXCHANGE_ADDRESS = process.env.NEXT_PUBLIC_EXCHANGE_ADDRESS ?? '';
+export const vault_ADDRESS = process.env.NEXT_PUBLIC_vault_ADDRESS ?? '';
 
 export const ENCLAVE_URL = process.env.ENCLAVE_URL ?? 'http://127.0.0.1:8088';
 
@@ -48,8 +48,8 @@ export const EXTERNAL_LINKS = {
   DOCS: 'https://docs.midnight.network/',
 } as const;
 
-export const explorerTx = (hash: string) => `${EXPLORER_URL}/tx/${hash}`;
-export const explorerContract = (address: string) => `${EXPLORER_URL}/contract/${address}`;
+export const explorerTx = (hash: string) => `${EXPLORER_URL}/transactions/${hash}`;
+export const explorerContract = (address: string) => `${EXPLORER_URL}/contracts/${address}`;
 
 export const formatDust = (value: bigint): string =>
   (Number(value) / 10 ** DUST_DECIMALS).toLocaleString(undefined, {

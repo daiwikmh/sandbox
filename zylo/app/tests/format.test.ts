@@ -38,8 +38,8 @@ describe('hex shortening', () => {
 
 describe('explorer links', () => {
   it('builds tx and contract urls', () => {
-    expect(explorerTx('0xabc')).toContain('/tx/0xabc');
-    expect(explorerContract('0xdef')).toContain('/contract/0xdef');
+    expect(explorerTx('0xabc')).toContain('/transactions/0xabc');
+    expect(explorerContract('0xdef')).toContain('/contracts/0xdef');
   });
 });
 

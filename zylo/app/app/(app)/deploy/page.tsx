@@ -33,7 +33,7 @@ export default function DeployPage() {
       const [{ deployContract }, contractModule, { commitSecret }, { CompiledContract }] =
         await Promise.all([
           import('@midnight-ntwrk/midnight-js-contracts'),
-          import('../../../../managed/exchange/contract/index.js') as never,
+          import('../../../../managed/vault/contract/index.js') as never,
           import('@zylo/crypto/commitments'),
           import('@midnight-ntwrk/compact-js'),
         ]);
@@ -44,7 +44,7 @@ export default function DeployPage() {
 
       const compiledContract = CompiledContract.withCompiledFileAssets(
         CompiledContract.withWitnesses(
-          CompiledContract.make('zylo-exchange', Contract as never),
+          CompiledContract.make('zylo-vault', Contract as never),
           witnesses as never,
         ),
         PROVIDER_CONFIG.zkConfig as never,
@@ -54,7 +54,7 @@ export default function DeployPage() {
         providers,
         {
           compiledContract,
-          privateStateId: 'zylo-exchange',
+          privateStateId: 'zylo-vault',
           initialPrivateState: privateState,
           args: [governorCommitment],
         },
@@ -85,7 +85,7 @@ export default function DeployPage() {
         <StatTile label="DUST CAP" value={formatDust(dustCap)} sub="generation ceiling" />
         <StatTile label="NETWORK" value={PROVIDER_CONFIG.networkId} sub="from NEXT_PUBLIC_NETWORK_ID" />
         <StatTile
-          label="EXCHANGE"
+          label="vault"
           value={CONTRACT_CONFIGURED || deployedAt ? 'deployed' : 'none'}
           sub="contract address"
         />
@@ -95,7 +95,7 @@ export default function DeployPage() {
         <Card className="activity-surface">
           <CardHead
             eyebrow="ONE-TIME ACTION"
-            title="Deploy the exchange"
+            title="Deploy the vault"
             hint="Lace signs and pays. The proof is built by your local proof server."
           />
           <KV k="Shielded address" v={<Mono>{address ? shortHex(address, 12, 8) : '—'}</Mono>} />
@@ -116,7 +116,7 @@ export default function DeployPage() {
             <Notice tone="good">
               Deployed. Add this to <code>app/.env.local</code> and restart:
               <br />
-              <code>NEXT_PUBLIC_EXCHANGE_ADDRESS={deployedAt}</code>
+              <code>NEXT_PUBLIC_vault_ADDRESS={deployedAt}</code>
             </Notice>
           )}
 

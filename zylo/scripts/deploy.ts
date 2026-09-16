@@ -6,8 +6,8 @@ import { indexerPublicDataProvider } from '@midnight-ntwrk/midnight-js-indexer-p
 import { httpClientProofProvider } from '@midnight-ntwrk/midnight-js-http-client-proof-provider';
 import { NodeZkConfigProvider } from '@midnight-ntwrk/midnight-js-node-zk-config-provider';
 import { levelPrivateStateProvider } from '@midnight-ntwrk/midnight-js-level-private-state-provider';
-import { Contract } from '../managed/exchange/contract/index.js';
-import { commitSecret, bytes } from '../tests/exchange-simulator.js';
+import { Contract } from '../managed/vault/contract/index.js';
+import { commitSecret, bytes } from '../tests/vault-simulator.js';
 import { ENDPOINTS, openWallet } from './wallet.js';
 
 const wallet = await openWallet();
@@ -31,11 +31,11 @@ if (total === 0n) {
   process.exit(1);
 }
 
-const zkConfigProvider = new NodeZkConfigProvider<never>('managed/exchange');
+const zkConfigProvider = new NodeZkConfigProvider<never>('managed/vault');
 
 const providers = {
   privateStateProvider: levelPrivateStateProvider({
-    privateStateStoreName: 'zylo-exchange',
+    privateStateStoreName: 'zylo-vault',
     accountId: 'deployer',
     privateStoragePasswordProvider: async () => 'zylo-local-deploy',
   }),
@@ -57,10 +57,10 @@ const providers = {
 
 const governorSecret = bytes(42);
 
-process.stdout.write('deploying exchange.compact…\n');
+process.stdout.write('deploying vault.compact…\n');
 const deployed = await deployContract(providers, {
   contract: new Contract({}) as never,
-  privateStateId: 'zylo-exchange',
+  privateStateId: 'zylo-vault',
   initialPrivateState: {},
   args: [commitSecret('zylo:governor:v1', governorSecret)],
 } as never);
@@ -70,7 +70,7 @@ const address = (deployed as { deployTxData: { public: { contractAddress: string
 
 process.stdout.write(`\n  deployed at  ${address}\n\n`);
 writeFileSync('.deploy-address', `${address}\n`);
-writeFileSync('app/.env.local', `NEXT_PUBLIC_EXCHANGE_ADDRESS=${address}\n`, { flag: 'a' });
+writeFileSync('app/.env.local', `NEXT_PUBLIC_vault_ADDRESS=${address}\n`, { flag: 'a' });
 
 await (wallet as { close: () => Promise<void> }).close();
 process.exit(0);

@@ -361,49 +361,49 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(termsHash_0.buffer instanceof ArrayBuffer && termsHash_0.BYTES_PER_ELEMENT === 1 && termsHash_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Bytes<32>',
                                      termsHash_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(rows_0) === 'bigint' && rows_0 >= 0n && rows_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Uint<0..18446744073709551616>',
                                      rows_0)
         }
         if (!(typeof(jobClasses_0) === 'bigint' && jobClasses_0 >= 0n && jobClasses_0 <= 255n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Uint<0..256>',
                                      jobClasses_0)
         }
         if (!(typeof(budget_0) === 'bigint' && budget_0 >= 0n && budget_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 6 (argument 7 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'vault.compact line 78 char 1',
                                      'Uint<0..18446744073709551616>',
                                      budget_0)
         }
@@ -442,42 +442,42 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(path_0) === 'object' && path_0.leaf.buffer instanceof ArrayBuffer && path_0.leaf.BYTES_PER_ELEMENT === 1 && path_0.leaf.length === 32 && Array.isArray(path_0.path) && path_0.path.length === 12 && path_0.path.every((t) => typeof(t) === 'object' && typeof(t.sibling) === 'object' && typeof(t.sibling.field) === 'bigint' && t.sibling.field >= 0 && t.sibling.field <= __compactRuntime.MAX_FIELD && typeof(t.goes_left) === 'boolean'))) {
           __compactRuntime.typeError('requestJob',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'struct MerkleTreePath<leaf: Bytes<32>, path: Vector<12, struct MerkleTreePathEntry<sibling: struct MerkleTreeDigest<field: Field>, goes_left: Boolean>>>',
                                      path_0)
         }
         if (!(specCommitment_0.buffer instanceof ArrayBuffer && specCommitment_0.BYTES_PER_ELEMENT === 1 && specCommitment_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'Bytes<32>',
                                      specCommitment_0)
         }
         if (!(typeof(escrow_0) === 'object' && escrow_0.nonce.buffer instanceof ArrayBuffer && escrow_0.nonce.BYTES_PER_ELEMENT === 1 && escrow_0.nonce.length === 32 && escrow_0.color.buffer instanceof ArrayBuffer && escrow_0.color.BYTES_PER_ELEMENT === 1 && escrow_0.color.length === 32 && typeof(escrow_0.value) === 'bigint' && escrow_0.value >= 0n && escrow_0.value <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'vault.compact line 112 char 1',
                                      'struct ShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>>',
                                      escrow_0)
         }
@@ -512,21 +512,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
+                                     'vault.compact line 156 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
+                                     'vault.compact line 156 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
         if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
+                                     'vault.compact line 156 char 1',
                                      'JubjubPoint',
                                      enclaveKey_0)
         }
@@ -559,28 +559,28 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'vault.compact line 169 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'vault.compact line 169 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
         if (!(resultCommitment_0.buffer instanceof ArrayBuffer && resultCommitment_0.BYTES_PER_ELEMENT === 1 && resultCommitment_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'vault.compact line 169 char 1',
                                      'Bytes<32>',
                                      resultCommitment_0)
         }
         if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
           __compactRuntime.typeError('settleJob',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'vault.compact line 169 char 1',
                                      'JubjubPoint',
                                      enclaveKey_0)
         }
@@ -614,28 +614,28 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'vault.compact line 200 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'vault.compact line 200 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(typeof(coin_0) === 'object' && coin_0.nonce.buffer instanceof ArrayBuffer && coin_0.nonce.BYTES_PER_ELEMENT === 1 && coin_0.nonce.length === 32 && coin_0.color.buffer instanceof ArrayBuffer && coin_0.color.BYTES_PER_ELEMENT === 1 && coin_0.color.length === 32 && typeof(coin_0.value) === 'bigint' && coin_0.value >= 0n && coin_0.value <= 340282366920938463463374607431768211455n && typeof(coin_0.mt_index) === 'bigint' && coin_0.mt_index >= 0n && coin_0.mt_index <= 18446744073709551615n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'vault.compact line 200 char 1',
                                      'struct QualifiedShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>, mt_index: Uint<0..18446744073709551616>>',
                                      coin_0)
         }
         if (!(typeof(amount_0) === 'bigint' && amount_0 >= 0n && amount_0 <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'vault.compact line 200 char 1',
                                      'Uint<0..340282366920938463463374607431768211456>',
                                      amount_0)
         }
@@ -667,14 +667,14 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
           __compactRuntime.typeError('allowlistEnclave',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 231 char 1',
+                                     'vault.compact line 231 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
           __compactRuntime.typeError('allowlistEnclave',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 231 char 1',
+                                     'vault.compact line 231 char 1',
                                      'JubjubPoint',
                                      enclaveKey_0)
         }
@@ -734,7 +734,7 @@ export class Contract {
     if (!(governorCommitment_0.buffer instanceof ArrayBuffer && governorCommitment_0.BYTES_PER_ELEMENT === 1 && governorCommitment_0.length === 32)) {
       __compactRuntime.typeError('Contract state constructor',
                                  'argument 1 (argument 2 as invoked from Typescript)',
-                                 'exchange.compact line 45 char 1',
+                                 'vault.compact line 45 char 1',
                                  'Bytes<32>',
                                  governorCommitment_0)
     }
@@ -1193,7 +1193,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('ownerSecret',
                                  'return value',
-                                 'exchange.compact line 39 char 1',
+                                 'vault.compact line 39 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -1210,7 +1210,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('buyerSecret',
                                  'return value',
-                                 'exchange.compact line 40 char 1',
+                                 'vault.compact line 40 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -1227,7 +1227,7 @@ export class Contract {
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('governorSecret',
                                  'return value',
-                                 'exchange.compact line 41 char 1',
+                                 'vault.compact line 41 char 1',
                                  'Bytes<32>',
                                  result_0)
     }
@@ -1244,7 +1244,7 @@ export class Contract {
     if (!(typeof(result_0.x) === 'bigint' && typeof(result_0.y) === 'bigint')) {
       __compactRuntime.typeError('attestationNonce',
                                  'return value',
-                                 'exchange.compact line 42 char 1',
+                                 'vault.compact line 42 char 1',
                                  'JubjubPoint',
                                  result_0)
     }
@@ -1261,7 +1261,7 @@ export class Contract {
     if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('attestationScalar',
                                  'return value',
-                                 'exchange.compact line 43 char 1',
+                                 'vault.compact line 43 char 1',
                                  'Field',
                                  result_0)
     }
@@ -1755,7 +1755,7 @@ export class Contract {
     const tmp_3 = job_0.payoutCommitment;
     const tmp_4 = ((t1) => {
                     if (t1 > 340282366920938463463374607431768211455n) {
-                      throw new __compactRuntime.CompactError('exchange.compact line 190 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
+                      throw new __compactRuntime.CompactError('vault.compact line 190 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
                     }
                     return t1;
                   })(previous_0 + job_0.escrow);
@@ -2023,7 +2023,7 @@ export function ledger(stateOrChargedState) {
         if (!(typeof(rt_0) === 'object' && typeof(rt_0.field) === 'bigint' && rt_0.field >= 0 && rt_0.field <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('checkRoot',
                                      'argument 1',
-                                     'exchange.compact line 5 char 1',
+                                     'vault.compact line 5 char 1',
                                      'struct MerkleTreeDigest<field: Field>',
                                      rt_0)
         }
@@ -2074,14 +2074,14 @@ export function ledger(stateOrChargedState) {
         if (!(typeof(index_0) === 'bigint' && index_0 >= 0 && index_0 <= __compactRuntime.MAX_FIELD)) {
           __compactRuntime.typeError('path_for_leaf',
                                      'argument 1',
-                                     'exchange.compact line 5 char 1',
+                                     'vault.compact line 5 char 1',
                                      'Field',
                                      index_0)
         }
         if (!(leaf_0.buffer instanceof ArrayBuffer && leaf_0.BYTES_PER_ELEMENT === 1 && leaf_0.length === 32)) {
           __compactRuntime.typeError('path_for_leaf',
                                      'argument 2',
-                                     'exchange.compact line 5 char 1',
+                                     'vault.compact line 5 char 1',
                                      'Bytes<32>',
                                      leaf_0)
         }
@@ -2096,7 +2096,7 @@ export function ledger(stateOrChargedState) {
         if (!(leaf_0.buffer instanceof ArrayBuffer && leaf_0.BYTES_PER_ELEMENT === 1 && leaf_0.length === 32)) {
           __compactRuntime.typeError('find_path_for_leaf',
                                      'argument 1',
-                                     'exchange.compact line 5 char 1',
+                                     'vault.compact line 5 char 1',
                                      'Bytes<32>',
                                      leaf_0)
         }
@@ -2167,7 +2167,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 7 char 1',
+                                     'vault.compact line 7 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -2196,7 +2196,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('lookup',
                                      'argument 1',
-                                     'exchange.compact line 7 char 1',
+                                     'vault.compact line 7 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -2276,7 +2276,7 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 8 char 1',
+                                     'vault.compact line 8 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
@@ -2354,7 +2354,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 9 char 1',
+                                     'vault.compact line 9 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -2383,7 +2383,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('lookup',
                                      'argument 1',
-                                     'exchange.compact line 9 char 1',
+                                     'vault.compact line 9 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -2463,7 +2463,7 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 10 char 1',
+                                     'vault.compact line 10 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
@@ -2541,7 +2541,7 @@ export function ledger(stateOrChargedState) {
         if (!(elem_0.buffer instanceof ArrayBuffer && elem_0.BYTES_PER_ELEMENT === 1 && elem_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 11 char 1',
+                                     'vault.compact line 11 char 1',
                                      'Bytes<32>',
                                      elem_0)
         }
@@ -2619,7 +2619,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('member',
                                      'argument 1',
-                                     'exchange.compact line 12 char 1',
+                                     'vault.compact line 12 char 1',
                                      'Bytes<32>',
                                      key_0)
         }
@@ -2648,7 +2648,7 @@ export function ledger(stateOrChargedState) {
         if (!(key_0.buffer instanceof ArrayBuffer && key_0.BYTES_PER_ELEMENT === 1 && key_0.length === 32)) {
           __compactRuntime.typeError('lookup',
                                      'argument 1',
-                                     'exchange.compact line 12 char 1',
+                                     'vault.compact line 12 char 1',
                                      'Bytes<32>',
                                      key_0)
         }

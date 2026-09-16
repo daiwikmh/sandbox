@@ -1,4 +1,4 @@
-# Zylo — refactor to a confidential data exchange on Midnight
+# Zylo — refactor to a confidential data vault on Midnight
 
 **Status: built.** All six phases executed. `PLAN.md` and `DARKPOOL.md` were
 retired in Phase 1. What follows is the plan as written, annotated where the
@@ -100,11 +100,11 @@ whose authenticity the ZK verifies.
 ```
 zylo/
 ├── contracts/
-│   └── exchange.compact          # the one contract
-├── managed/exchange/             # compiled circuits + keys (committed)
+│   └── vault.compact          # the one contract
+├── managed/vault/             # compiled circuits + keys (committed)
 ├── tests/
-│   ├── exchange.test.ts
-│   └── exchange-simulator.ts
+│   ├── vault.test.ts
+│   └── vault-simulator.ts
 ├── enclave/                      # Go, runs inside AWS Nitro
 │   ├── cmd/enclave/main.go
 │   ├── internal/attest/          # Nitro attestation doc, signing key
@@ -389,7 +389,7 @@ Phase 1 rather than during Phase 4.
 
 ### Phase 1 — Contract
 
-Write `exchange.compact`, all six circuits. Port the simulator harness from
+Write `vault.compact`, all six circuits. Port the simulator harness from
 `tests/darkpool-simulator.ts` — it is good and it transfers directly. Delete the
 dark pool. Retire `PLAN.md` and `DARKPOOL.md`.
 

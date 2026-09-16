@@ -4,12 +4,12 @@ import { wrapKeyForEnclave } from '../crypto/keywrap.js';
 import { Enclave } from '../enclave/enclave.js';
 import { JOB_CLASS } from '../enclave/jobspec.js';
 import {
-  ExchangeSimulator,
+  vaultSimulator,
   bytes,
   datasetIdOf,
   jobIdOf,
   payoutCommitmentOf,
-} from './exchange-simulator.js';
+} from './vault-simulator.js';
 
 const GOVERNOR = bytes(42);
 const OWNER = bytes(1);
@@ -34,7 +34,7 @@ describe('end to end', () => {
     const sealed = await sealDataset(data, datasetKey);
     const wrappedKey = await wrapKeyForEnclave(datasetKey, enclave.publicKey);
 
-    const sim = await ExchangeSimulator.deploy(GOVERNOR);
+    const sim = await vaultSimulator.deploy(GOVERNOR);
     await sim.allowlistEnclave(enclave.publicKey);
     await sim.registerDataset(sealed.root, bytes(201), PRICE, 200n, BigInt(CLASSES));
 

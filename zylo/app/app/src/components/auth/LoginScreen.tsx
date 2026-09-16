@@ -18,11 +18,11 @@ export const LoginScreen = () => {
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.png" alt="" width={22} height={22} />
             </span>
-            zylo<span>exchange</span>
+            zylo<span>vault</span>
             <i aria-hidden="true" />
           </Link>
 
-          <span className="eyebrow">CONFIDENTIAL EXCHANGE</span>
+          <span className="eyebrow">CONFIDENTIAL vault</span>
           <h3>Your data, earning without leaving you</h3>
           <p>
             Publish a dataset that stays encrypted, let others compute on it, and collect tDUST

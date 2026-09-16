@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
-  ExchangeSimulator,
+  vaultSimulator,
   bytes,
   commitSecret,
   datasetIdOf,
@@ -10,7 +10,7 @@ import {
   jobIdOf,
   payoutCommitmentOf,
   signAttestation,
-} from './exchange-simulator.js';
+} from './vault-simulator.js';
 
 const GOVERNOR = bytes(42);
 const OWNER = bytes(1);
@@ -28,10 +28,10 @@ const rogue = enclaveKeypair(9999n);
 const SPEC = bytes(77);
 const RESULT = bytes(88);
 
-let sim: ExchangeSimulator;
+let sim: vaultSimulator;
 
 async function bootstrap(): Promise<void> {
-  sim = await ExchangeSimulator.deploy(GOVERNOR);
+  sim = await vaultSimulator.deploy(GOVERNOR);
   await sim.allowlistEnclave(enclave.publicKey);
   await sim.registerDataset(ROOT, TERMS, PRICE, ROWS, CLASSES);
 }

@@ -17,7 +17,7 @@ import {
   sampleContractAddress,
   transientHash,
 } from '@midnight-ntwrk/compact-runtime';
-import { Contract, type Ledger, ledger } from '../managed/exchange/contract/index.js';
+import { Contract, type Ledger, ledger } from '../managed/vault/contract/index.js';
 import {
   type Keypair,
   challengeParts,
@@ -95,7 +95,7 @@ export const enclaveFingerprint = fingerprint;
 export const signAttestation = sign;
 export type EnclaveKeypair = Keypair;
 
-export class ExchangeSimulator {
+export class vaultSimulator {
   private readonly contract: Contract<PrivateState>;
   private contractState: ContractState;
   private privateState: PrivateState;
@@ -107,7 +107,7 @@ export class ExchangeSimulator {
     this.privateState = privateState;
   }
 
-  static async deploy(governorSecret: Uint8Array): Promise<ExchangeSimulator> {
+  static async deploy(governorSecret: Uint8Array): Promise<vaultSimulator> {
     const contract = new Contract<PrivateState>(witnesses);
     const privateState: PrivateState = {
       ownerSecret: bytes(1),
@@ -122,7 +122,7 @@ export class ExchangeSimulator {
       createConstructorContext(privateState, COIN_PUBLIC_KEY) as ConstructorContext<PrivateState>,
       commitSecret('zylo:governor:v1', governorSecret),
     );
-    return new ExchangeSimulator(currentContractState, currentPrivateState as PrivateState);
+    return new vaultSimulator(currentContractState, currentPrivateState as PrivateState);
   }
 
   patch(next: Partial<PrivateState>): void {

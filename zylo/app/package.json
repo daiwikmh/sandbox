@@ -14,7 +14,7 @@
     "mobile:setup": "npm run cap:sync && echo 'Mobile platforms synced. Now run: npm run cap:ios OR npm run cap:android'",
     "test": "vitest run",
     "test:watch": "vitest",
-    "zk": "rm -rf public/zk && mkdir -p public/zk && cp -r ../managed/exchange/keys ../managed/exchange/zkir ../managed/exchange/compiler public/zk/"
+    "zk": "rm -rf public/zk && mkdir -p public/zk && cp -r ../managed/vault/keys ../managed/vault/zkir ../managed/vault/compiler public/zk/"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.1",

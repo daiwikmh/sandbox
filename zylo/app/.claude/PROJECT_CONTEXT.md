@@ -1,4 +1,4 @@
-# Zylo — confidential data exchange on Midnight
+# Zylo — confidential data vault on Midnight
 
 The web client for a dataset marketplace where the data is never handed over. Owners
 publish encrypted datasets; buyers pay tDUST for a bounded computation over them; an
@@ -45,7 +45,7 @@ Shared code lives outside this package and is aliased in `next.config.ts`:
 ## State of play
 
 The app encrypts and computes for real. It does **not** settle on chain yet:
-`NEXT_PUBLIC_EXCHANGE_ADDRESS` is unset, so `store.ts` keeps listings and jobs in browser
+`NEXT_PUBLIC_vault_ADDRESS` is unset, so `store.ts` keeps listings and jobs in browser
 storage and the shell says so. Encrypted blobs live in `sessionStorage`, which means a
 reload loses them — object storage is not wired up.
 

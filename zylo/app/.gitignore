@@ -42,5 +42,5 @@ next-env.d.ts
 
 /app/generated/prisma
 
-# Generated ZK artifacts, copied from managed/exchange at build time
+# Generated ZK artifacts, copied from managed/vault at build time
 public/zk/
