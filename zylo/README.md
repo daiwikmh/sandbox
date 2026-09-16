@@ -314,11 +314,11 @@ npm run dev            # http://localhost:3000 (falls back to 3001 if taken)
 | `receiveShielded` executes | **yes** | simulator |
 | `sendShielded` round trip | **no** | needs a node; the offline simulator cannot assign `mt_index` |
 | Deployed to a testnet | **yes** | preview, block 891,017 — [tx](https://explorer.preview.midnight.network/transactions/11c63a2b42f580431d7f6190e07beccb36d32f6d2fb732a89e66c8f254da1fe6) |
-| App wired to the deployed contract | **partly** | only `/deploy` calls the chain; the other pages still read `localStorage` |
+| App wired to the deployed contract | **partly** | only `/deploy` calls the chain; the remaining pages are not wired to it yet |
 | Runs in a real Nitro enclave | **no** | code written; reports unattested off Nitro |
 | Proving in a browser | **no** | never measured; `claimEarnings` is a ~10 MB key |
 | Governor multisig | **no** | single governor commitment today |
-| Blob storage backend | **no** | blobs live in `sessionStorage`; a reload loses them |
+| Durable blob storage | **no** | ciphertext is content-addressed by Merkle root; the object store is not wired up yet |
 | Mobile (Capacitor) build | **no** | layout verified at 390px and 320px; never run on a device |
 
 ### How it reaches ledger v8

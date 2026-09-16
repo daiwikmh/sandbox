@@ -73,6 +73,25 @@ Private inputs let a user prove a relationship to an on-chain commitment —
 "I own this dataset", "this job targets that listing" — without revealing which
 one.
 
+## How the data is stored
+
+Three concerns are kept separate, and only one of them involves a server.
+
+| | Where it lives |
+|---|---|
+| **Plaintext** | Nowhere. It exists only inside the enclave's protected memory, for the duration of one job, and the key and plaintext are zeroed afterwards. |
+| **Dataset key** | With the owner. It is wrapped to the enclave's Jubjub public key via ECIES, per job, and never transmitted in the clear. |
+| **Ciphertext** | Content-addressed object storage, keyed by the Merkle root the contract already commits to. Chunks are written as `datasets/<root>/<index>`. |
+
+The storage host is **untrusted by construction**. The enclave re-derives the
+Merkle root from the chunks it fetched and compares it against the on-chain
+commitment before decrypting anything, so a provider that swaps, truncates or
+corrupts a chunk causes the job to abort rather than to quietly return a wrong
+answer. Content addressing means a wrong byte is a wrong address.
+
+Nothing about this requires trusting the operator, which is why the object store
+can be commodity infrastructure.
+
 ## Making privacy enforceable, not promised
 
 The hard part was never encryption. It was proving, without trusting anyone,
@@ -156,7 +175,7 @@ Full setup, including the Compact toolchain and proof server, is in
 
 | | |
 |---|---|
-| **The loop on chain** | Every page moves from local state to the deployed vault, so two browsers see one market instead of two private copies. |
+| **The loop on chain** | Every page moves onto the deployed vault, so two browsers see one market instead of two private copies. |
 | **A real enclave** | Run on AWS Nitro with a published measurement, and make allowlisting a deliberate, auditable act in the UI. |
 | **Durable datasets** | Encrypted blobs move to content-addressed storage keyed by the Merkle root the contract already commits to. |
 | **Governance** | Governor multisig in place of a single commitment, plus an explicit in-circuit range check on the attestation challenge. |
@@ -167,9 +186,9 @@ Full setup, including the Compact toolchain and proof server, is in
 
 ## Status
 
-The contract is live on preview and the deploy path is real. The product pages
-still read and write local state rather than the deployed vault — wiring them up
-is the next milestone. The status table in [`zylo/README.md`](zylo/README.md#status)
-says exactly what is verified and what is not.
+The contract is live on preview and the deploy path is real. The remaining
+product pages are not yet wired to it — that is the next milestone. The status
+table in [`zylo/README.md`](zylo/README.md#status) says exactly what is verified
+and what is not.
 
 > Unaudited testnet software. Do not use it with data you care about.
