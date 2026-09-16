@@ -31,6 +31,12 @@
       ],
       "@zylo/enclave/*": [
         "../enclave/*"
+      ],
+      "@midnight-ntwrk/*": [
+        "./node_modules/@midnight-ntwrk/*"
+      ],
+      "@midnightntwrk/*": [
+        "./node_modules/@midnightntwrk/*"
       ]
     }
   },
