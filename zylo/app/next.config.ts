@@ -7,7 +7,7 @@ const ROOT = path.join(__dirname, '..');
 const APP_MODULES = path.join(__dirname, 'node_modules');
 
 const nextConfig: NextConfig = {
-  outputFileTracingRoot: ROOT,
+  outputFileTracingRoot: __dirname,
   images: {
     unoptimized: true,
   },
