@@ -1,5 +1,5 @@
 import * as __compactRuntime from '@midnight-ntwrk/compact-runtime';
-__compactRuntime.checkRuntimeVersion('0.19.0');
+__compactRuntime.checkRuntimeVersion('0.16.0');
 
 const _descriptor_0 = new __compactRuntime.CompactTypeBytes(32);
 
@@ -198,55 +198,53 @@ class _Either_0 {
 
 const _descriptor_18 = new _Either_0();
 
-const _descriptor_19 = __compactRuntime.CompactTypeField;
-
-const _descriptor_20 = new __compactRuntime.CompactTypeBytes(21);
+const _descriptor_19 = new __compactRuntime.CompactTypeBytes(21);
 
 class _CoinPreimage_0 {
   alignment() {
-    return _descriptor_20.alignment().concat(_descriptor_14.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment())));
+    return _descriptor_19.alignment().concat(_descriptor_14.alignment().concat(_descriptor_3.alignment().concat(_descriptor_0.alignment())));
   }
   fromValue(value_0) {
     return {
-      domain_sep: _descriptor_20.fromValue(value_0),
+      domain_sep: _descriptor_19.fromValue(value_0),
       info: _descriptor_14.fromValue(value_0),
       dataType: _descriptor_3.fromValue(value_0),
       data: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_20.toValue(value_0.domain_sep).concat(_descriptor_14.toValue(value_0.info).concat(_descriptor_3.toValue(value_0.dataType).concat(_descriptor_0.toValue(value_0.data))));
+    return _descriptor_19.toValue(value_0.domain_sep).concat(_descriptor_14.toValue(value_0.info).concat(_descriptor_3.toValue(value_0.dataType).concat(_descriptor_0.toValue(value_0.data))));
   }
 }
 
-const _descriptor_21 = new _CoinPreimage_0();
+const _descriptor_20 = new _CoinPreimage_0();
 
-const _descriptor_22 = new __compactRuntime.CompactTypeVector(2, _descriptor_0);
+const _descriptor_21 = new __compactRuntime.CompactTypeVector(2, _descriptor_0);
 
-const _descriptor_23 = new __compactRuntime.CompactTypeVector(1, _descriptor_7);
+const _descriptor_22 = new __compactRuntime.CompactTypeVector(1, _descriptor_7);
 
-const _descriptor_24 = new __compactRuntime.CompactTypeVector(3, _descriptor_0);
+const _descriptor_23 = new __compactRuntime.CompactTypeVector(3, _descriptor_0);
 
-const _descriptor_25 = new __compactRuntime.CompactTypeVector(2, _descriptor_7);
+const _descriptor_24 = new __compactRuntime.CompactTypeVector(2, _descriptor_7);
 
-const _descriptor_26 = new __compactRuntime.CompactTypeBytes(6);
+const _descriptor_25 = new __compactRuntime.CompactTypeBytes(6);
 
 class _LeafPreimage_0 {
   alignment() {
-    return _descriptor_26.alignment().concat(_descriptor_0.alignment());
+    return _descriptor_25.alignment().concat(_descriptor_0.alignment());
   }
   fromValue(value_0) {
     return {
-      domain_sep: _descriptor_26.fromValue(value_0),
+      domain_sep: _descriptor_25.fromValue(value_0),
       data: _descriptor_0.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_26.toValue(value_0.domain_sep).concat(_descriptor_0.toValue(value_0.data));
+    return _descriptor_25.toValue(value_0.domain_sep).concat(_descriptor_0.toValue(value_0.data));
   }
 }
 
-const _descriptor_27 = new _LeafPreimage_0();
+const _descriptor_26 = new _LeafPreimage_0();
 
 class _Attestation_0 {
   alignment() {
@@ -264,7 +262,7 @@ class _Attestation_0 {
   }
 }
 
-const _descriptor_28 = new _Attestation_0();
+const _descriptor_27 = new _Attestation_0();
 
 class _Maybe_0 {
   alignment() {
@@ -281,24 +279,24 @@ class _Maybe_0 {
   }
 }
 
-const _descriptor_29 = new _Maybe_0();
+const _descriptor_28 = new _Maybe_0();
 
 class _ShieldedSendResult_0 {
   alignment() {
-    return _descriptor_29.alignment().concat(_descriptor_14.alignment());
+    return _descriptor_28.alignment().concat(_descriptor_14.alignment());
   }
   fromValue(value_0) {
     return {
-      change: _descriptor_29.fromValue(value_0),
+      change: _descriptor_28.fromValue(value_0),
       sent: _descriptor_14.fromValue(value_0)
     }
   }
   toValue(value_0) {
-    return _descriptor_29.toValue(value_0.change).concat(_descriptor_14.toValue(value_0.sent));
+    return _descriptor_28.toValue(value_0.change).concat(_descriptor_14.toValue(value_0.sent));
   }
 }
 
-const _descriptor_30 = new _ShieldedSendResult_0();
+const _descriptor_29 = new _ShieldedSendResult_0();
 
 class _Either_1 {
   alignment() {
@@ -316,9 +314,7 @@ class _Either_1 {
   }
 }
 
-const _descriptor_31 = new _Either_1();
-
-const _descriptor_32 = new __compactRuntime.CompactTypeUnsignedInteger(4294967295n, 4);
+const _descriptor_30 = new _Either_1();
 
 export class Contract {
   witnesses;
@@ -345,9 +341,15 @@ export class Contract {
     if (typeof(witnesses_0.attestationScalar) !== 'function') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named attestationScalar');
     }
+    if (typeof(witnesses_0.challengeLow) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named challengeLow');
+    }
+    if (typeof(witnesses_0.challengeHigh) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named challengeHigh');
+    }
     this.witnesses = witnesses_0;
     this.circuits = {
-      registerDataset: async (...args_1) => {
+      registerDataset: (...args_1) => {
         if (args_1.length !== 7) {
           throw new __compactRuntime.CompactError(`registerDataset: expected 7 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
@@ -358,56 +360,56 @@ export class Contract {
         const rows_0 = args_1[4];
         const jobClasses_0 = args_1[5];
         const budget_0 = args_1[6];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(termsHash_0.buffer instanceof ArrayBuffer && termsHash_0.BYTES_PER_ELEMENT === 1 && termsHash_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Bytes<32>',
                                      termsHash_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(rows_0) === 'bigint' && rows_0 >= 0n && rows_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Uint<0..18446744073709551616>',
                                      rows_0)
         }
         if (!(typeof(jobClasses_0) === 'bigint' && jobClasses_0 >= 0n && jobClasses_0 <= 255n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Uint<0..256>',
                                      jobClasses_0)
         }
         if (!(typeof(budget_0) === 'bigint' && budget_0 >= 0n && budget_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 6 (argument 7 as invoked from Typescript)',
-                                     'exchange.compact line 78 char 1',
+                                     'exchange.compact line 92 char 1',
                                      'Uint<0..18446744073709551616>',
                                      budget_0)
         }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_0.toValue(datasetRoot_0).concat(_descriptor_0.toValue(termsHash_0).concat(_descriptor_5.toValue(price_0).concat(_descriptor_5.toValue(rows_0).concat(_descriptor_9.toValue(jobClasses_0).concat(_descriptor_5.toValue(budget_0)))))),
@@ -417,19 +419,18 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._registerDataset_0(context,
-                                                       partialProofData,
-                                                       datasetRoot_0,
-                                                       termsHash_0,
-                                                       price_0,
-                                                       rows_0,
-                                                       jobClasses_0,
-                                                       budget_0);
+        const result_0 = this._registerDataset_0(context,
+                                                 partialProofData,
+                                                 datasetRoot_0,
+                                                 termsHash_0,
+                                                 price_0,
+                                                 rows_0,
+                                                 jobClasses_0,
+                                                 budget_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
-      requestJob: async (...args_1) => {
+      requestJob: (...args_1) => {
         if (args_1.length !== 6) {
           throw new __compactRuntime.CompactError(`requestJob: expected 6 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
@@ -439,49 +440,49 @@ export class Contract {
         const path_0 = args_1[3];
         const specCommitment_0 = args_1[4];
         const escrow_0 = args_1[5];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(path_0) === 'object' && path_0.leaf.buffer instanceof ArrayBuffer && path_0.leaf.BYTES_PER_ELEMENT === 1 && path_0.leaf.length === 32 && Array.isArray(path_0.path) && path_0.path.length === 12 && path_0.path.every((t) => typeof(t) === 'object' && typeof(t.sibling) === 'object' && typeof(t.sibling.field) === 'bigint' && t.sibling.field >= 0 && t.sibling.field <= __compactRuntime.MAX_FIELD && typeof(t.goes_left) === 'boolean'))) {
           __compactRuntime.typeError('requestJob',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'struct MerkleTreePath<leaf: Bytes<32>, path: Vector<12, struct MerkleTreePathEntry<sibling: struct MerkleTreeDigest<field: Field>, goes_left: Boolean>>>',
                                      path_0)
         }
         if (!(specCommitment_0.buffer instanceof ArrayBuffer && specCommitment_0.BYTES_PER_ELEMENT === 1 && specCommitment_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'Bytes<32>',
                                      specCommitment_0)
         }
         if (!(typeof(escrow_0) === 'object' && escrow_0.nonce.buffer instanceof ArrayBuffer && escrow_0.nonce.BYTES_PER_ELEMENT === 1 && escrow_0.nonce.length === 32 && escrow_0.color.buffer instanceof ArrayBuffer && escrow_0.color.BYTES_PER_ELEMENT === 1 && escrow_0.color.length === 32 && typeof(escrow_0.value) === 'bigint' && escrow_0.value >= 0n && escrow_0.value <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 112 char 1',
+                                     'exchange.compact line 126 char 1',
                                      'struct ShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>>',
                                      escrow_0)
         }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_0.toValue(datasetId_0).concat(_descriptor_5.toValue(price_0).concat(_descriptor_13.toValue(path_0).concat(_descriptor_0.toValue(specCommitment_0).concat(_descriptor_14.toValue(escrow_0))))),
@@ -491,46 +492,38 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._requestJob_0(context,
-                                                  partialProofData,
-                                                  datasetId_0,
-                                                  price_0,
-                                                  path_0,
-                                                  specCommitment_0,
-                                                  escrow_0);
+        const result_0 = this._requestJob_0(context,
+                                            partialProofData,
+                                            datasetId_0,
+                                            price_0,
+                                            path_0,
+                                            specCommitment_0,
+                                            escrow_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
-      grantAccess: async (...args_1) => {
+      grantAccess: (...args_1) => {
         if (args_1.length !== 3) {
           throw new __compactRuntime.CompactError(`grantAccess: expected 3 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
         const contextOrig_0 = args_1[0];
         const jobId_0 = args_1[1];
         const enclaveKey_0 = args_1[2];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
+                                     'exchange.compact line 170 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
+                                     'exchange.compact line 170 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
-        if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
-          __compactRuntime.typeError('grantAccess',
-                                     'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 156 char 1',
-                                     'JubjubPoint',
-                                     enclaveKey_0)
-        }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_0.toValue(jobId_0).concat(_descriptor_1.toValue(enclaveKey_0)),
@@ -540,15 +533,14 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._grantAccess_0(context,
-                                                   partialProofData,
-                                                   jobId_0,
-                                                   enclaveKey_0);
+        const result_0 = this._grantAccess_0(context,
+                                             partialProofData,
+                                             jobId_0,
+                                             enclaveKey_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
-      settleJob: async (...args_1) => {
+      settleJob: (...args_1) => {
         if (args_1.length !== 4) {
           throw new __compactRuntime.CompactError(`settleJob: expected 4 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
@@ -556,35 +548,28 @@ export class Contract {
         const jobId_0 = args_1[1];
         const resultCommitment_0 = args_1[2];
         const enclaveKey_0 = args_1[3];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'exchange.compact line 183 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'exchange.compact line 183 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
         if (!(resultCommitment_0.buffer instanceof ArrayBuffer && resultCommitment_0.BYTES_PER_ELEMENT === 1 && resultCommitment_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
+                                     'exchange.compact line 183 char 1',
                                      'Bytes<32>',
                                      resultCommitment_0)
         }
-        if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
-          __compactRuntime.typeError('settleJob',
-                                     'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 169 char 1',
-                                     'JubjubPoint',
-                                     enclaveKey_0)
-        }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_0.toValue(jobId_0).concat(_descriptor_0.toValue(resultCommitment_0).concat(_descriptor_1.toValue(enclaveKey_0))),
@@ -594,16 +579,15 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._settleJob_0(context,
-                                                 partialProofData,
-                                                 jobId_0,
-                                                 resultCommitment_0,
-                                                 enclaveKey_0);
+        const result_0 = this._settleJob_0(context,
+                                           partialProofData,
+                                           jobId_0,
+                                           resultCommitment_0,
+                                           enclaveKey_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
-      claimEarnings: async (...args_1) => {
+      claimEarnings: (...args_1) => {
         if (args_1.length !== 4) {
           throw new __compactRuntime.CompactError(`claimEarnings: expected 4 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
@@ -611,35 +595,35 @@ export class Contract {
         const datasetRoot_0 = args_1[1];
         const coin_0 = args_1[2];
         const amount_0 = args_1[3];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'exchange.compact line 214 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'exchange.compact line 214 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(typeof(coin_0) === 'object' && coin_0.nonce.buffer instanceof ArrayBuffer && coin_0.nonce.BYTES_PER_ELEMENT === 1 && coin_0.nonce.length === 32 && coin_0.color.buffer instanceof ArrayBuffer && coin_0.color.BYTES_PER_ELEMENT === 1 && coin_0.color.length === 32 && typeof(coin_0.value) === 'bigint' && coin_0.value >= 0n && coin_0.value <= 340282366920938463463374607431768211455n && typeof(coin_0.mt_index) === 'bigint' && coin_0.mt_index >= 0n && coin_0.mt_index <= 18446744073709551615n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'exchange.compact line 214 char 1',
                                      'struct QualifiedShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>, mt_index: Uint<0..18446744073709551616>>',
                                      coin_0)
         }
         if (!(typeof(amount_0) === 'bigint' && amount_0 >= 0n && amount_0 <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 200 char 1',
+                                     'exchange.compact line 214 char 1',
                                      'Uint<0..340282366920938463463374607431768211456>',
                                      amount_0)
         }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_0.toValue(datasetRoot_0).concat(_descriptor_6.toValue(coin_0).concat(_descriptor_2.toValue(amount_0))),
@@ -649,36 +633,28 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._claimEarnings_0(context,
-                                                     partialProofData,
-                                                     datasetRoot_0,
-                                                     coin_0,
-                                                     amount_0);
+        const result_0 = this._claimEarnings_0(context,
+                                               partialProofData,
+                                               datasetRoot_0,
+                                               coin_0,
+                                               amount_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       },
-      allowlistEnclave: async (...args_1) => {
+      allowlistEnclave: (...args_1) => {
         if (args_1.length !== 2) {
           throw new __compactRuntime.CompactError(`allowlistEnclave: expected 2 arguments (as invoked from Typescript), received ${args_1.length}`);
         }
         const contextOrig_0 = args_1[0];
         const enclaveKey_0 = args_1[1];
-        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.callContext.currentQueryContext != undefined)) {
+        if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('allowlistEnclave',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 231 char 1',
+                                     'exchange.compact line 245 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
-        if (!(typeof(enclaveKey_0.x) === 'bigint' && typeof(enclaveKey_0.y) === 'bigint')) {
-          __compactRuntime.typeError('allowlistEnclave',
-                                     'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 231 char 1',
-                                     'JubjubPoint',
-                                     enclaveKey_0)
-        }
-        const context = __compactRuntime.copyCircuitContext(contextOrig_0);
+        const context = { ...contextOrig_0, gasCost: __compactRuntime.emptyRunningCost() };
         const partialProofData = {
           input: {
             value: _descriptor_1.toValue(enclaveKey_0),
@@ -688,12 +664,11 @@ export class Contract {
           publicTranscript: [],
           privateTranscriptOutputs: []
         };
-        const result_0 = await this._allowlistEnclave_0(context,
-                                                        partialProofData,
-                                                        enclaveKey_0);
+        const result_0 = this._allowlistEnclave_0(context,
+                                                  partialProofData,
+                                                  enclaveKey_0);
         partialProofData.output = { value: [], alignment: [] };
-        __compactRuntime.finalizeCallProofData(context, partialProofData);
-        return { result: result_0, context: context, gasCost: context.callContext.currentGasCost };
+        return { result: result_0, context: context, proofData: partialProofData, gasCost: context.gasCost };
       }
     };
     this.impureCircuits = {
@@ -713,7 +688,7 @@ export class Contract {
       allowlistEnclave: this.circuits.allowlistEnclave
     };
   }
-  async initialState(...args_0) {
+  initialState(...args_0) {
     if (args_0.length !== 2) {
       throw new __compactRuntime.CompactError(`Contract state constructor: expected 2 arguments (as invoked from Typescript), received ${args_0.length}`);
     }
@@ -734,7 +709,7 @@ export class Contract {
     if (!(governorCommitment_0.buffer instanceof ArrayBuffer && governorCommitment_0.BYTES_PER_ELEMENT === 1 && governorCommitment_0.length === 32)) {
       __compactRuntime.typeError('Contract state constructor',
                                  'argument 1 (argument 2 as invoked from Typescript)',
-                                 'exchange.compact line 45 char 1',
+                                 'exchange.compact line 47 char 1',
                                  'Bytes<32>',
                                  governorCommitment_0)
     }
@@ -756,7 +731,7 @@ export class Contract {
     state_0.setOperation('settleJob', new __compactRuntime.ContractOperation());
     state_0.setOperation('claimEarnings', new __compactRuntime.ContractOperation());
     state_0.setOperation('allowlistEnclave', new __compactRuntime.ContractOperation());
-    const context = __compactRuntime.createCircuitContext('constructor', __compactRuntime.dummyContractAddress(), constructorContext_0.initialZswapLocalState.coinPublicKey, state_0.data, constructorContext_0.initialPrivateState);
+    const context = __compactRuntime.createCircuitContext(__compactRuntime.dummyContractAddress(), constructorContext_0.initialZswapLocalState.coinPublicKey, state_0.data, constructorContext_0.initialPrivateState);
     const partialProofData = {
       input: { value: [], alignment: [] },
       output: undefined,
@@ -873,11 +848,11 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newCell({ value: _descriptor_0.toValue(governorCommitment_0),
                                                                                               alignment: _descriptor_0.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } }]);
-    state_0.data = new __compactRuntime.ChargedState(context.callContext.currentQueryContext.state.state);
+    state_0.data = new __compactRuntime.ChargedState(context.currentQueryContext.state.state);
     return {
       currentContractState: state_0,
-      currentPrivateState: context.callContext.currentPrivateState,
-      currentZswapLocalState: context.callContext.currentZswapLocalState
+      currentPrivateState: context.currentPrivateState,
+      currentZswapLocalState: context.currentZswapLocalState
     }
   }
   _some_0(value_0) { return { is_some: true, value: value_0 }; }
@@ -909,7 +884,7 @@ export class Contract {
                     recursiveDigest_0;
     return this._transientHash_1([left_0, right_0]);
   }
-  async _receiveShielded_0(context, partialProofData, coin_0) {
+  _receiveShielded_0(context, partialProofData, coin_0) {
     const recipient_0 = this._right_0(_descriptor_17.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                  partialProofData,
                                                                                                  [
@@ -943,8 +918,7 @@ export class Contract {
                                        { swap: { n: 0 } }]);
     return [];
   }
-  async _sendShielded_0(context, partialProofData, input_0, recipient_0, value_0)
-  {
+  _sendShielded_0(context, partialProofData, input_0, recipient_0, value_0) {
     const selfAddr_0 = _descriptor_17.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                   partialProofData,
                                                                                   [
@@ -983,11 +957,9 @@ export class Contract {
                                                'result of subtraction would be negative'),
                        t_0 - value_0));
     const output_0 = { nonce:
-                         this._upgradeFromTransient_0(this._transientHash_1([__compactRuntime.convertBytesToUint(52435875175126190479447740508185965837690552500527637822603658699938581184512n,
-                                                                                                                 28,
-                                                                                                                 new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 107, 101, 114, 110, 101, 108, 58, 110, 111, 110, 99, 101, 95, 101, 118, 111, 108, 118, 101]),
-                                                                                                                 'Field',
-                                                                                                                 '<standard library>'),
+                         this._upgradeFromTransient_0(this._transientHash_1([__compactRuntime.convertBytesToField(28,
+                                                                                                                  new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 107, 101, 114, 110, 101, 108, 58, 110, 111, 110, 99, 101, 95, 101, 118, 111, 108, 118, 101]),
+                                                                                                                  '<standard library>'),
                                                                              this._degradeToTransient_0(input_0.nonce)])),
                        color: input_0.color,
                        value: value_0 };
@@ -1033,15 +1005,13 @@ export class Contract {
                                          { ins: { cached: true, n: 2 } },
                                          { swap: { n: 0 } }]);
     }
-    if (change_0 === 0n) {
+    if (this._equal_1(change_0, 0n)) {
       return { change: this._none_0(), sent: output_0 };
     } else {
       const changeCoin_0 = { nonce:
-                               this._upgradeFromTransient_0(this._transientHash_1([__compactRuntime.convertBytesToUint(52435875175126190479447740508185965837690552500527637822603658699938581184512n,
-                                                                                                                       30,
-                                                                                                                       new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 107, 101, 114, 110, 101, 108, 58, 110, 111, 110, 99, 101, 95, 101, 118, 111, 108, 118, 101, 47, 50]),
-                                                                                                                       'Field',
-                                                                                                                       '<standard library>'),
+                               this._upgradeFromTransient_0(this._transientHash_1([__compactRuntime.convertBytesToField(30,
+                                                                                                                        new Uint8Array([109, 105, 100, 110, 105, 103, 104, 116, 58, 107, 101, 114, 110, 101, 108, 58, 110, 111, 110, 99, 101, 95, 101, 118, 111, 108, 118, 101, 47, 50]),
+                                                                                                                        '<standard library>'),
                                                                                    this._degradeToTransient_0(input_0.nonce)])),
                              color: input_0.color,
                              value: change_0 };
@@ -1109,31 +1079,31 @@ export class Contract {
                                     data: addr_0.bytes });
   }
   _transientHash_0(value_0) {
-    const result_0 = __compactRuntime.transientHash(_descriptor_28, value_0);
+    const result_0 = __compactRuntime.transientHash(_descriptor_27, value_0);
     return result_0;
   }
   _transientHash_1(value_0) {
-    const result_0 = __compactRuntime.transientHash(_descriptor_25, value_0);
+    const result_0 = __compactRuntime.transientHash(_descriptor_24, value_0);
     return result_0;
   }
   _persistentHash_0(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_27, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_26, value_0);
     return result_0;
   }
   _persistentHash_1(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_23, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_22, value_0);
     return result_0;
   }
   _persistentHash_2(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_24, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_23, value_0);
     return result_0;
   }
   _persistentHash_3(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_21, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_20, value_0);
     return result_0;
   }
   _persistentHash_4(value_0) {
-    const result_0 = __compactRuntime.persistentHash(_descriptor_22, value_0);
+    const result_0 = __compactRuntime.persistentHash(_descriptor_21, value_0);
     return result_0;
   }
   _persistentHash_5(value_0) {
@@ -1187,9 +1157,9 @@ export class Contract {
     return result_0;
   }
   _ownerSecret_0(context, partialProofData) {
-    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.callContext.currentQueryContext.state), context.callContext.currentPrivateState, context.callContext.currentQueryContext.address);
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.ownerSecret(witnessContext_0);
-    context.callContext.currentPrivateState = nextPrivateState_0;
+    context.currentPrivateState = nextPrivateState_0;
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('ownerSecret',
                                  'return value',
@@ -1204,9 +1174,9 @@ export class Contract {
     return result_0;
   }
   _buyerSecret_0(context, partialProofData) {
-    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.callContext.currentQueryContext.state), context.callContext.currentPrivateState, context.callContext.currentQueryContext.address);
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.buyerSecret(witnessContext_0);
-    context.callContext.currentPrivateState = nextPrivateState_0;
+    context.currentPrivateState = nextPrivateState_0;
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('buyerSecret',
                                  'return value',
@@ -1221,9 +1191,9 @@ export class Contract {
     return result_0;
   }
   _governorSecret_0(context, partialProofData) {
-    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.callContext.currentQueryContext.state), context.callContext.currentPrivateState, context.callContext.currentQueryContext.address);
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.governorSecret(witnessContext_0);
-    context.callContext.currentPrivateState = nextPrivateState_0;
+    context.currentPrivateState = nextPrivateState_0;
     if (!(result_0.buffer instanceof ArrayBuffer && result_0.BYTES_PER_ELEMENT === 1 && result_0.length === 32)) {
       __compactRuntime.typeError('governorSecret',
                                  'return value',
@@ -1238,16 +1208,9 @@ export class Contract {
     return result_0;
   }
   _attestationNonce_0(context, partialProofData) {
-    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.callContext.currentQueryContext.state), context.callContext.currentPrivateState, context.callContext.currentQueryContext.address);
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.attestationNonce(witnessContext_0);
-    context.callContext.currentPrivateState = nextPrivateState_0;
-    if (!(typeof(result_0.x) === 'bigint' && typeof(result_0.y) === 'bigint')) {
-      __compactRuntime.typeError('attestationNonce',
-                                 'return value',
-                                 'exchange.compact line 42 char 1',
-                                 'JubjubPoint',
-                                 result_0)
-    }
+    context.currentPrivateState = nextPrivateState_0;
     partialProofData.privateTranscriptOutputs.push({
       value: _descriptor_1.toValue(result_0),
       alignment: _descriptor_1.alignment()
@@ -1255,13 +1218,47 @@ export class Contract {
     return result_0;
   }
   _attestationScalar_0(context, partialProofData) {
-    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.callContext.currentQueryContext.state), context.callContext.currentPrivateState, context.callContext.currentQueryContext.address);
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
     const [nextPrivateState_0, result_0] = this.witnesses.attestationScalar(witnessContext_0);
-    context.callContext.currentPrivateState = nextPrivateState_0;
+    context.currentPrivateState = nextPrivateState_0;
     if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
       __compactRuntime.typeError('attestationScalar',
                                  'return value',
                                  'exchange.compact line 43 char 1',
+                                 'Field',
+                                 result_0)
+    }
+    partialProofData.privateTranscriptOutputs.push({
+      value: _descriptor_7.toValue(result_0),
+      alignment: _descriptor_7.alignment()
+    });
+    return result_0;
+  }
+  _challengeLow_0(context, partialProofData) {
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
+    const [nextPrivateState_0, result_0] = this.witnesses.challengeLow(witnessContext_0);
+    context.currentPrivateState = nextPrivateState_0;
+    if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('challengeLow',
+                                 'return value',
+                                 'exchange.compact line 44 char 1',
+                                 'Field',
+                                 result_0)
+    }
+    partialProofData.privateTranscriptOutputs.push({
+      value: _descriptor_7.toValue(result_0),
+      alignment: _descriptor_7.alignment()
+    });
+    return result_0;
+  }
+  _challengeHigh_0(context, partialProofData) {
+    const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
+    const [nextPrivateState_0, result_0] = this.witnesses.challengeHigh(witnessContext_0);
+    context.currentPrivateState = nextPrivateState_0;
+    if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
+      __compactRuntime.typeError('challengeHigh',
+                                 'return value',
+                                 'exchange.compact line 45 char 1',
                                  'Field',
                                  result_0)
     }
@@ -1282,28 +1279,46 @@ export class Contract {
                                    secret_0,
                                    datasetRoot_0]);
   }
-  async _verifyAttestation_0(context, partialProofData, key_0, message_0) {
+  _verifyAttestation_0(context, partialProofData, key_0, message_0) {
     const nonce_0 = this._attestationNonce_0(context, partialProofData);
     const s_0 = this._attestationScalar_0(context, partialProofData);
-    const challenge_0 = this._transientHash_0({ nonce: nonce_0,
-                                                key: key_0,
-                                                message: message_0 });
-    __compactRuntime.assert(this._equal_1(this._ecMulGenerator_0(s_0),
+    const hash_0 = this._transientHash_0({ nonce: nonce_0,
+                                           key: key_0,
+                                           message: message_0 });
+    const low_0 = ((t1) => {
+                    if (t1 > 340282366920938463463374607431768211455n) {
+                      throw new __compactRuntime.CompactError('exchange.compact line 78 char 15: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
+                    }
+                    return t1;
+                  })(this._challengeLow_0(context, partialProofData));
+    const high_0 = ((t1) => {
+                     if (t1 > 340282366920938463463374607431768211455n) {
+                       throw new __compactRuntime.CompactError('exchange.compact line 79 char 16: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
+                     }
+                     return t1;
+                   })(this._challengeHigh_0(context, partialProofData));
+    __compactRuntime.assert(hash_0
+                            ===
+                            __compactRuntime.addField(__compactRuntime.mulField(high_0,
+                                                                                340282366920938463463374607431768211456n),
+                                                      low_0),
+                            'challenge decomposition does not match the hash');
+    __compactRuntime.assert(this._equal_2(this._ecMulGenerator_0(s_0),
                                           this._ecAdd_0(nonce_0,
                                                         this._ecMul_0(key_0,
-                                                                      challenge_0))),
+                                                                      low_0))),
                             'bad attestation');
     return [];
   }
   _enclaveFingerprint_0(key_0) { return this._persistentHash_5(key_0); }
-  async _registerDataset_0(context,
-                           partialProofData,
-                           datasetRoot_0,
-                           termsHash_0,
-                           price_0,
-                           rows_0,
-                           jobClasses_0,
-                           budget_0)
+  _registerDataset_0(context,
+                     partialProofData,
+                     datasetRoot_0,
+                     termsHash_0,
+                     price_0,
+                     rows_0,
+                     jobClasses_0,
+                     budget_0)
   {
     __compactRuntime.assert(price_0 > 0n, 'price must be positive');
     __compactRuntime.assert(rows_0 > 0n, 'dataset must have rows');
@@ -1410,13 +1425,13 @@ export class Contract {
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  async _requestJob_0(context,
-                      partialProofData,
-                      datasetId_0,
-                      price_0,
-                      path_0,
-                      specCommitment_0,
-                      escrow_0)
+  _requestJob_0(context,
+                partialProofData,
+                datasetId_0,
+                price_0,
+                path_0,
+                specCommitment_0,
+                escrow_0)
   {
     let tmp_0;
     __compactRuntime.assert((tmp_0 = this._merkleTreePathRoot_0(path_0),
@@ -1444,7 +1459,7 @@ export class Contract {
                                                                                         { popeq: { cached: true,
                                                                                                    result: undefined } }]).value)),
                             'unknown listing root');
-    __compactRuntime.assert(this._equal_2(path_0.leaf,
+    __compactRuntime.assert(this._equal_3(path_0.leaf,
                                           this._listingLeaf_0(datasetId_0,
                                                               price_0)),
                             'path does not match listing');
@@ -1524,7 +1539,7 @@ export class Contract {
                                                                                               alignment: _descriptor_10.alignment() }).encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
-    await this._receiveShielded_0(context, partialProofData, escrow_0);
+    this._receiveShielded_0(context, partialProofData, escrow_0);
     const tmp_2 = { escrow: escrow_0.value,
                     specCommitment: specCommitment_0,
                     payoutCommitment: payoutCommitment_0,
@@ -1550,7 +1565,7 @@ export class Contract {
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  async _grantAccess_0(context, partialProofData, jobId_0, enclaveKey_0) {
+  _grantAccess_0(context, partialProofData, jobId_0, enclaveKey_0) {
     __compactRuntime.assert(_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                       partialProofData,
                                                                                       [
@@ -1587,10 +1602,7 @@ export class Contract {
                                                                                         { popeq: { cached: true,
                                                                                                    result: undefined } }]).value)),
                             'enclave not allowlisted');
-    await this._verifyAttestation_0(context,
-                                    partialProofData,
-                                    enclaveKey_0,
-                                    jobId_0);
+    this._verifyAttestation_0(context, partialProofData, enclaveKey_0, jobId_0);
     const grantNullifier_0 = this._persistentHash_4([new Uint8Array([122, 121, 108, 111, 58, 103, 114, 97, 110, 116, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                                      jobId_0]);
     __compactRuntime.assert(!_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
@@ -1628,11 +1640,11 @@ export class Contract {
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  async _settleJob_0(context,
-                     partialProofData,
-                     jobId_0,
-                     resultCommitment_0,
-                     enclaveKey_0)
+  _settleJob_0(context,
+               partialProofData,
+               jobId_0,
+               resultCommitment_0,
+               enclaveKey_0)
   {
     __compactRuntime.assert(_descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                       partialProofData,
@@ -1708,10 +1720,10 @@ export class Contract {
                                                                                        { popeq: { cached: true,
                                                                                                   result: undefined } }]).value),
                             'access was never granted');
-    await this._verifyAttestation_0(context,
-                                    partialProofData,
-                                    enclaveKey_0,
-                                    resultCommitment_0);
+    this._verifyAttestation_0(context,
+                              partialProofData,
+                              enclaveKey_0,
+                              resultCommitment_0);
     let tmp_1, tmp_2;
     const previous_0 = (tmp_1 = job_0.payoutCommitment,
                         _descriptor_3.fromValue(__compactRuntime.queryLedgerState(context,
@@ -1755,7 +1767,7 @@ export class Contract {
     const tmp_3 = job_0.payoutCommitment;
     const tmp_4 = ((t1) => {
                     if (t1 > 340282366920938463463374607431768211455n) {
-                      throw new __compactRuntime.CompactError('exchange.compact line 190 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
+                      throw new __compactRuntime.CompactError('exchange.compact line 204 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
                     }
                     return t1;
                   })(previous_0 + job_0.escrow);
@@ -1800,12 +1812,7 @@ export class Contract {
                                        { ins: { cached: true, n: 1 } }]);
     return [];
   }
-  async _claimEarnings_0(context,
-                         partialProofData,
-                         datasetRoot_0,
-                         coin_0,
-                         amount_0)
-  {
+  _claimEarnings_0(context, partialProofData, datasetRoot_0, coin_0, amount_0) {
     const secret_0 = this._ownerSecret_0(context, partialProofData);
     const datasetId_0 = this._datasetIdOf_0(datasetRoot_0, secret_0);
     const payoutCommitment_0 = this._persistentHash_4([new Uint8Array([122, 121, 108, 111, 58, 97, 99, 99, 114, 117, 101, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
@@ -1904,19 +1911,19 @@ export class Contract {
                                                  value: __compactRuntime.StateValue.newNull().encode() } },
                                        { ins: { cached: false, n: 1 } },
                                        { ins: { cached: true, n: 1 } }]);
-    await this._sendShielded_0(context,
-                               partialProofData,
-                               coin_0,
-                               this._left_0(this._ownPublicKey_0(context,
-                                                                 partialProofData)),
-                               amount_0);
+    this._sendShielded_0(context,
+                         partialProofData,
+                         coin_0,
+                         this._left_0(this._ownPublicKey_0(context,
+                                                           partialProofData)),
+                         amount_0);
     return [];
   }
-  async _allowlistEnclave_0(context, partialProofData, enclaveKey_0) {
+  _allowlistEnclave_0(context, partialProofData, enclaveKey_0) {
     const secret_0 = this._governorSecret_0(context, partialProofData);
     const commitment_0 = this._persistentHash_4([new Uint8Array([122, 121, 108, 111, 58, 103, 111, 118, 101, 114, 110, 111, 114, 58, 118, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
                                                  secret_0]);
-    __compactRuntime.assert(this._equal_3(commitment_0,
+    __compactRuntime.assert(this._equal_4(commitment_0,
                                           _descriptor_0.fromValue(__compactRuntime.queryLedgerState(context,
                                                                                                     partialProofData,
                                                                                                     [
@@ -1958,16 +1965,27 @@ export class Contract {
     return true;
   }
   _equal_1(x0, y0) {
-    if (x0.x != y0.x || x0.y != y0.y) {
-      return false;
-    }
+    if (x0 !== y0) { return false; }
     return true;
   }
   _equal_2(x0, y0) {
-    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    {
+      let x1 = x0.x;
+      let y1 = y0.x;
+      if (x1 !== y1) { return false; }
+    }
+    {
+      let x1 = x0.y;
+      let y1 = y0.y;
+      if (x1 !== y1) { return false; }
+    }
     return true;
   }
   _equal_3(x0, y0) {
+    if (!x0.every((x, i) => y0[i] === x)) { return false; }
+    return true;
+  }
+  _equal_4(x0, y0) {
     if (!x0.every((x, i) => y0[i] === x)) { return false; }
     return true;
   }
@@ -1976,7 +1994,7 @@ export function ledger(stateOrChargedState) {
   const state = stateOrChargedState instanceof __compactRuntime.StateValue ? stateOrChargedState : stateOrChargedState.state;
   const chargedState = stateOrChargedState instanceof __compactRuntime.StateValue ? new __compactRuntime.ChargedState(stateOrChargedState) : stateOrChargedState;
   const context = {
-    callContext: { currentQueryContext: new __compactRuntime.QueryContext(chargedState, __compactRuntime.dummyContractAddress()), currentGasCost: __compactRuntime.emptyRunningCost() },
+    currentQueryContext: new __compactRuntime.QueryContext(chargedState, __compactRuntime.dummyContractAddress()),
     costModel: __compactRuntime.CostModel.initialCostModel()
   };
   const partialProofData = {
@@ -2696,25 +2714,18 @@ export function ledger(stateOrChargedState) {
   };
 }
 const _emptyContext = {
-  callContext: { currentQueryContext: new __compactRuntime.QueryContext(new __compactRuntime.ContractState().data, __compactRuntime.dummyContractAddress()), currentGasCost: __compactRuntime.emptyRunningCost() }
+  currentQueryContext: new __compactRuntime.QueryContext(new __compactRuntime.ContractState().data, __compactRuntime.dummyContractAddress())
 };
 const _dummyContract = new Contract({
   ownerSecret: (...args) => undefined,
   buyerSecret: (...args) => undefined,
   governorSecret: (...args) => undefined,
   attestationNonce: (...args) => undefined,
-  attestationScalar: (...args) => undefined
+  attestationScalar: (...args) => undefined,
+  challengeLow: (...args) => undefined,
+  challengeHigh: (...args) => undefined
 });
 export const pureCircuits = {};
 export const contractReferenceLocations =
   { tag: 'publicLedgerArray', indices: { } };
-export const expectedVk = {
-  'allowlistEnclave': '7dedb168447b385ecb9f030c55d0ee5be2d18964ad3c2c90795e38926beb0655',
-  'claimEarnings': '4deb74e9e2aaf62416d59f8861e0b0329d9ce706c08fd03fc1ce82bdb7c792fd',
-  'grantAccess': '9f0cc0849c97accdaff1e088f859cb8f2250dbb363da34d3246254db664749c2',
-  'registerDataset': 'd427503bd8866b2ab08c42065c50ae1c5d82ba3e6c4af8a35330928ec33b3683',
-  'requestJob': '0590d8bd29131ad01a1991ade32fe9ec8d027e243ad97d68730c123fd2dc4e14',
-  'settleJob': '40f9937682827b6fb568d12c2f4e0b39865caa6f0cd23b06c4da210b1f55ba47',
-};
-
 //# sourceMappingURL=index.js.map

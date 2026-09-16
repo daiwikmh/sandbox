@@ -1,4 +1,12 @@
-import { EXCHANGE_ADDRESS, INDEXER_URL, INDEXER_WS_URL, NETWORK_ID, PROOF_SERVER_URL, ZK_CONFIG_URL } from '../utils/constants';
+import {
+  EXCHANGE_ADDRESS,
+  INDEXER_URL,
+  INDEXER_WS_URL,
+  NETWORK_ID,
+  NODE_URL,
+  PROOF_SERVER_URL,
+  ZK_CONFIG_URL,
+} from '../utils/constants';
 
 export const CONTRACT_CONFIGURED = EXCHANGE_ADDRESS.length > 0;
 
@@ -22,6 +30,7 @@ export const PROVIDER_CONFIG = {
   indexer: INDEXER_URL,
   indexerWS: INDEXER_WS_URL,
   proofServer: PROOF_SERVER_URL,
+  node: NODE_URL,
   zkConfig: ZK_CONFIG_URL,
   contract: EXCHANGE_ADDRESS,
 } as const;

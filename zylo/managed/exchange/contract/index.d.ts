@@ -6,6 +6,8 @@ export type Witnesses<PS> = {
   governorSecret(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
   attestationNonce(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, __compactRuntime.JubjubPoint];
   attestationScalar(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
+  challengeLow(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
+  challengeHigh(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
 }
 
 export type ImpureCircuits<PS> = {
@@ -15,7 +17,7 @@ export type ImpureCircuits<PS> = {
                   price_0: bigint,
                   rows_0: bigint,
                   jobClasses_0: bigint,
-                  budget_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                  budget_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   requestJob(context: __compactRuntime.CircuitContext<PS>,
              datasetId_0: Uint8Array,
              price_0: bigint,
@@ -23,14 +25,14 @@ export type ImpureCircuits<PS> = {
                        path: { sibling: { field: bigint }, goes_left: boolean }[]
                      },
              specCommitment_0: Uint8Array,
-             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): Promise<__compactRuntime.CircuitResults<PS, []>>;
+             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): __compactRuntime.CircuitResults<PS, []>;
   grantAccess(context: __compactRuntime.CircuitContext<PS>,
               jobId_0: Uint8Array,
-              enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+              enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   settleJob(context: __compactRuntime.CircuitContext<PS>,
             jobId_0: Uint8Array,
             resultCommitment_0: Uint8Array,
-            enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+            enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   claimEarnings(context: __compactRuntime.CircuitContext<PS>,
                 datasetRoot_0: Uint8Array,
                 coin_0: { nonce: Uint8Array,
@@ -38,9 +40,9 @@ export type ImpureCircuits<PS> = {
                           value: bigint,
                           mt_index: bigint
                         },
-                amount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                amount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   allowlistEnclave(context: __compactRuntime.CircuitContext<PS>,
-                   enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                   enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type ProvableCircuits<PS> = {
@@ -50,7 +52,7 @@ export type ProvableCircuits<PS> = {
                   price_0: bigint,
                   rows_0: bigint,
                   jobClasses_0: bigint,
-                  budget_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                  budget_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   requestJob(context: __compactRuntime.CircuitContext<PS>,
              datasetId_0: Uint8Array,
              price_0: bigint,
@@ -58,14 +60,14 @@ export type ProvableCircuits<PS> = {
                        path: { sibling: { field: bigint }, goes_left: boolean }[]
                      },
              specCommitment_0: Uint8Array,
-             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): Promise<__compactRuntime.CircuitResults<PS, []>>;
+             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): __compactRuntime.CircuitResults<PS, []>;
   grantAccess(context: __compactRuntime.CircuitContext<PS>,
               jobId_0: Uint8Array,
-              enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+              enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   settleJob(context: __compactRuntime.CircuitContext<PS>,
             jobId_0: Uint8Array,
             resultCommitment_0: Uint8Array,
-            enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+            enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   claimEarnings(context: __compactRuntime.CircuitContext<PS>,
                 datasetRoot_0: Uint8Array,
                 coin_0: { nonce: Uint8Array,
@@ -73,9 +75,9 @@ export type ProvableCircuits<PS> = {
                           value: bigint,
                           mt_index: bigint
                         },
-                amount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                amount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   allowlistEnclave(context: __compactRuntime.CircuitContext<PS>,
-                   enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                   enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type PureCircuits = {
@@ -88,7 +90,7 @@ export type Circuits<PS> = {
                   price_0: bigint,
                   rows_0: bigint,
                   jobClasses_0: bigint,
-                  budget_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                  budget_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   requestJob(context: __compactRuntime.CircuitContext<PS>,
              datasetId_0: Uint8Array,
              price_0: bigint,
@@ -96,14 +98,14 @@ export type Circuits<PS> = {
                        path: { sibling: { field: bigint }, goes_left: boolean }[]
                      },
              specCommitment_0: Uint8Array,
-             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): Promise<__compactRuntime.CircuitResults<PS, []>>;
+             escrow_0: { nonce: Uint8Array, color: Uint8Array, value: bigint }): __compactRuntime.CircuitResults<PS, []>;
   grantAccess(context: __compactRuntime.CircuitContext<PS>,
               jobId_0: Uint8Array,
-              enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+              enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   settleJob(context: __compactRuntime.CircuitContext<PS>,
             jobId_0: Uint8Array,
             resultCommitment_0: Uint8Array,
-            enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+            enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
   claimEarnings(context: __compactRuntime.CircuitContext<PS>,
                 datasetRoot_0: Uint8Array,
                 coin_0: { nonce: Uint8Array,
@@ -111,9 +113,9 @@ export type Circuits<PS> = {
                           value: bigint,
                           mt_index: bigint
                         },
-                amount_0: bigint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                amount_0: bigint): __compactRuntime.CircuitResults<PS, []>;
   allowlistEnclave(context: __compactRuntime.CircuitContext<PS>,
-                   enclaveKey_0: __compactRuntime.JubjubPoint): Promise<__compactRuntime.CircuitResults<PS, []>>;
+                   enclaveKey_0: __compactRuntime.JubjubPoint): __compactRuntime.CircuitResults<PS, []>;
 }
 
 export type Ledger = {
@@ -203,9 +205,8 @@ export declare class Contract<PS = any, W extends Witnesses<PS> = Witnesses<PS>>
   provableCircuits: ProvableCircuits<PS>;
   constructor(witnesses: W);
   initialState(context: __compactRuntime.ConstructorContext<PS>,
-               governorCommitment_0: Uint8Array): Promise<__compactRuntime.ConstructorResult<PS>>;
+               governorCommitment_0: Uint8Array): __compactRuntime.ConstructorResult<PS>;
 }
 
 export declare function ledger(state: __compactRuntime.StateValue | __compactRuntime.ChargedState): Ledger;
 export declare const pureCircuits: PureCircuits;
-export declare const expectedVk: Record<string, string>;

@@ -1,7 +1,7 @@
 {
-  "compiler-version": "0.34.0",
-  "language-version": "0.26.0",
-  "runtime-version": "0.19.0",
+  "compiler-version": "0.31.1",
+  "language-version": "0.23.0",
+  "runtime-version": "0.16.0",
   "circuits": [
     {
       "name": "registerDataset",
@@ -185,7 +185,12 @@
         {
           "name": "enclaveKey",
           "type": {
-            "type-name": "JubjubPoint"
+            "type-name": "Alias",
+            "name": "JubjubPoint",
+            "type": {
+              "type-name": "Opaque",
+              "tsType": "JubjubPoint"
+            }
           }
         }
       ],
@@ -217,7 +222,12 @@
         {
           "name": "enclaveKey",
           "type": {
-            "type-name": "JubjubPoint"
+            "type-name": "Alias",
+            "name": "JubjubPoint",
+            "type": {
+              "type-name": "Opaque",
+              "tsType": "JubjubPoint"
+            }
           }
         }
       ],
@@ -298,7 +308,12 @@
         {
           "name": "enclaveKey",
           "type": {
-            "type-name": "JubjubPoint"
+            "type-name": "Alias",
+            "name": "JubjubPoint",
+            "type": {
+              "type-name": "Opaque",
+              "tsType": "JubjubPoint"
+            }
           }
         }
       ],
@@ -342,11 +357,32 @@
       "arguments": [
       ],
       "result type": {
-        "type-name": "JubjubPoint"
+        "type-name": "Alias",
+        "name": "JubjubPoint",
+        "type": {
+          "type-name": "Opaque",
+          "tsType": "JubjubPoint"
+        }
       }
     },
     {
       "name": "attestationScalar",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Field"
+      }
+    },
+    {
+      "name": "challengeLow",
+      "arguments": [
+      ],
+      "result type": {
+        "type-name": "Field"
+      }
+    },
+    {
+      "name": "challengeHigh",
       "arguments": [
       ],
       "result type": {

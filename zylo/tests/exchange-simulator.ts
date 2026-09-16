@@ -1,7 +1,6 @@
 import {
   type CircuitContext,
   type JubjubPoint,
-  ChargedState,
   CompactTypeBytes,
   CompactTypeField,
   CompactTypeJubjubPoint,
@@ -33,6 +32,8 @@ export type PrivateState = {
   readonly governorSecret: Uint8Array;
   readonly attestationNonce: JubjubPoint;
   readonly attestationScalar: bigint;
+  readonly challengeLow: bigint;
+  readonly challengeHigh: bigint;
 };
 
 export const witnesses = {
@@ -46,6 +47,10 @@ export const witnesses = {
     [ctx.privateState, ctx.privateState.attestationNonce],
   attestationScalar: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
     [ctx.privateState, ctx.privateState.attestationScalar],
+  challengeLow: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
+    [ctx.privateState, ctx.privateState.challengeLow],
+  challengeHigh: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
+    [ctx.privateState, ctx.privateState.challengeHigh],
 };
 
 const V1_FIELD = new CompactTypeVector(1, CompactTypeField);
@@ -117,8 +122,10 @@ export class ExchangeSimulator {
       governorSecret,
       attestationNonce: ecMulGenerator(1n),
       attestationScalar: 0n,
+      challengeLow: 0n,
+      challengeHigh: 0n,
     };
-    const { currentContractState, currentPrivateState } = await contract.initialState(
+    const { currentContractState, currentPrivateState } = contract.initialState(
       createConstructorContext(privateState, COIN_PUBLIC_KEY) as ConstructorContext<PrivateState>,
       commitSecret('zylo:governor:v1', governorSecret),
     );
@@ -137,9 +144,8 @@ export class ExchangeSimulator {
     return this.contractState.data.toString();
   }
 
-  private context(circuitId: string): CircuitContext<PrivateState> {
+  private context(): CircuitContext<PrivateState> {
     return createCircuitContext(
-      circuitId,
       this.address,
       COIN_PUBLIC_KEY,
       this.contractState,
@@ -148,9 +154,9 @@ export class ExchangeSimulator {
   }
 
   private commit(context: CircuitContext<PrivateState>): void {
-    this.privateState = context.callContext.currentPrivateState as PrivateState;
+    this.privateState = context.currentPrivateState as PrivateState;
     const next = new ContractState();
-    next.data = new ChargedState(context.callContext.currentQueryContext.state.state);
+    next.data = context.currentQueryContext.state;
     this.contractState = next;
   }
 
@@ -163,14 +169,14 @@ export class ExchangeSimulator {
     budget = 100n,
   ): Promise<void> {
     const { context } = await this.contract.impureCircuits.registerDataset(
-      this.context('registerDataset'), datasetRoot, termsHash, price, rows, jobClasses, budget,
+      this.context(), datasetRoot, termsHash, price, rows, jobClasses, budget,
     );
     this.commit(context);
   }
 
   async allowlistEnclave(key: JubjubPoint): Promise<void> {
     const { context } = await this.contract.impureCircuits.allowlistEnclave(
-      this.context('allowlistEnclave'), key,
+      this.context(), key,
     );
     this.commit(context);
   }
@@ -184,7 +190,7 @@ export class ExchangeSimulator {
     const leaf = listingLeaf(datasetId, price);
     const path = this.pathFor(leaf);
     const { context } = await this.contract.impureCircuits.requestJob(
-      this.context('requestJob'), datasetId, price, path, specCommitment,
+      this.context(), datasetId, price, path, specCommitment,
       { nonce: bytes(9), color: new Uint8Array(32), value: escrowValue },
     );
     this.commit(context);
@@ -192,7 +198,7 @@ export class ExchangeSimulator {
 
   async grantAccess(jobId: Uint8Array, key: JubjubPoint): Promise<void> {
     const { context } = await this.contract.impureCircuits.grantAccess(
-      this.context('grantAccess'), jobId, key,
+      this.context(), jobId, key,
     );
     this.commit(context);
   }
@@ -203,7 +209,7 @@ export class ExchangeSimulator {
     key: JubjubPoint,
   ): Promise<void> {
     const { context } = await this.contract.impureCircuits.settleJob(
-      this.context('settleJob'), jobId, resultCommitment, key,
+      this.context(), jobId, resultCommitment, key,
     );
     this.commit(context);
   }
@@ -214,7 +220,7 @@ export class ExchangeSimulator {
     mtIndex = 0n,
   ): Promise<void> {
     const { context } = await this.contract.impureCircuits.claimEarnings(
-      this.context('claimEarnings'), datasetRoot,
+      this.context(), datasetRoot,
       { nonce: bytes(11), color: new Uint8Array(32), value: amount, mt_index: mtIndex },
       amount,
     );

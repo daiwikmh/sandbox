@@ -1,11 +1,14 @@
 export const NETWORK_ID = process.env.NEXT_PUBLIC_NETWORK_ID ?? 'TestNet';
 
 export const INDEXER_URL =
-  process.env.NEXT_PUBLIC_INDEXER_URL ?? 'https://indexer.testnet.midnight.network/api/v1/graphql';
+  process.env.NEXT_PUBLIC_INDEXER_URL ??
+  'https://indexer.preprod.midnight.network/api/v4/graphql';
 
 export const INDEXER_WS_URL =
   process.env.NEXT_PUBLIC_INDEXER_WS_URL ??
-  'wss://indexer.testnet.midnight.network/api/v1/graphql/ws';
+  'wss://indexer.preprod.midnight.network/api/v4/graphql/ws';
+
+export const NODE_URL = process.env.NEXT_PUBLIC_NODE_URL ?? 'https://rpc.preprod.midnight.network';
 
 export const PROOF_SERVER_URL =
   process.env.NEXT_PUBLIC_PROOF_SERVER_URL ?? 'http://localhost:6300';
@@ -16,7 +19,7 @@ export const EXCHANGE_ADDRESS = process.env.NEXT_PUBLIC_EXCHANGE_ADDRESS ?? '';
 
 export const ENCLAVE_URL = process.env.ENCLAVE_URL ?? 'http://127.0.0.1:8088';
 
-export const EXPLORER_URL = 'https://explorer.testnet.midnight.network';
+export const EXPLORER_URL = 'https://explorer.preprod.midnight.network';
 
 export const DUST_DECIMALS = 6;
 
@@ -41,7 +44,7 @@ export const LIMITS = {
 
 export const EXTERNAL_LINKS = {
   LACE: 'https://www.lace.io/',
-  FAUCET: 'https://faucet.testnet.midnight.network/',
+  FAUCET: 'https://faucet.preprod.midnight.network/',
   DOCS: 'https://docs.midnight.network/',
 } as const;
 

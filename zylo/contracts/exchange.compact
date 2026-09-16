@@ -1,4 +1,4 @@
-pragma language_version 0.26;
+pragma language_version 0.23;
 
 import CompactStandardLibrary;
 
@@ -41,6 +41,8 @@ witness buyerSecret(): Bytes<32>;
 witness governorSecret(): Bytes<32>;
 witness attestationNonce(): JubjubPoint;
 witness attestationScalar(): Field;
+witness challengeLow(): Field;
+witness challengeHigh(): Field;
 
 constructor(governorCommitment: Bytes<32>) {
   governor = disclose(governorCommitment);
@@ -62,13 +64,25 @@ circuit datasetIdOf(datasetRoot: Bytes<32>, secret: Bytes<32>): Bytes<32> {
   );
 }
 
+// The hash is 255 bits but a Jubjub scalar must stay under the curve order, and
+// language 0.23 has no reducing cast. The prover supplies the 128/128 split and
+// the circuit range-checks both halves, so the decomposition is unique and the
+// low half is a sound 128-bit Fiat-Shamir challenge.
 circuit verifyAttestation(key: JubjubPoint, message: Bytes<32>): [] {
   const nonce = attestationNonce();
-  const s = attestationScalar() as JubjubScalar;
-  const challenge = transientHash<Attestation>(
+  const s = attestationScalar();
+  const hash = transientHash<Attestation>(
     Attestation { nonce: nonce, key: key, message: message }
-  ) as JubjubScalar;
-  assert(ecMulGenerator(s) == ecAdd(nonce, ecMul(key, challenge)), "bad attestation");
+  );
+
+  const low = challengeLow() as Uint<128>;
+  const high = challengeHigh() as Uint<128>;
+  assert(
+    hash == (high as Field) * 340282366920938463463374607431768211456 + (low as Field),
+    "challenge decomposition does not match the hash"
+  );
+
+  assert(ecMulGenerator(s) == ecAdd(nonce, ecMul(key, low as Field)), "bad attestation");
 }
 
 circuit enclaveFingerprint(key: JubjubPoint): Bytes<32> {

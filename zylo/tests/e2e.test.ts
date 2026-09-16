@@ -59,12 +59,16 @@ describe('end to end', () => {
     sim.patch({
       attestationNonce: outcome.grantSignature.nonce,
       attestationScalar: outcome.grantSignature.scalar,
+      challengeLow: outcome.grantSignature.low,
+      challengeHigh: outcome.grantSignature.high,
     });
     await sim.grantAccess(jobId, enclave.publicKey);
 
     sim.patch({
       attestationNonce: outcome.resultSignature.nonce,
       attestationScalar: outcome.resultSignature.scalar,
+      challengeLow: outcome.resultSignature.low,
+      challengeHigh: outcome.resultSignature.high,
     });
     await sim.settleJob(jobId, outcome.resultCommitment, enclave.publicKey);
 
