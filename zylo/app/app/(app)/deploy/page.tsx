@@ -5,7 +5,8 @@ import { Card, CardHead, KV, MetricGrid, Mono, Notice, StatTile } from '../../sr
 import { useWallet } from '../../src/midnight/wallet';
 import { CONTRACT_CONFIGURED, PROVIDER_CONFIG, connectProviders } from '../../src/midnight/providers';
 import { formatDust, shortHex } from '../../src/utils/constants';
-import { initialPrivateState, witnesses } from '../../src/midnight/witnesses';
+import { initialPrivateState } from '../../src/midnight/witnesses';
+import { PRIVATE_STATE_ID, buildCompiledContract } from '../../src/midnight/contract';
 
 type Stage = 'idle' | 'providers' | 'deploying' | 'done';
 
@@ -30,31 +31,20 @@ export default function DeployPage() {
       const providers = await connectProviders(api as never);
 
       setStage('deploying');
-      const [{ deployContract }, contractModule, { commitSecret }, { CompiledContract }] =
-        await Promise.all([
-          import('@midnight-ntwrk/midnight-js-contracts'),
-          import('../../../../managed/vault/contract/index.js') as never,
-          import('@zylo/crypto/commitments'),
-          import('@midnight-ntwrk/compact-js'),
-        ]);
+      const [{ deployContract }, { commitSecret }, compiledContract] = await Promise.all([
+        import('@midnight-ntwrk/midnight-js-contracts'),
+        import('@zylo/crypto/commitments'),
+        buildCompiledContract(),
+      ]);
 
-      const { Contract } = contractModule as { Contract: new (w: unknown) => unknown };
       const privateState = initialPrivateState();
       const governorCommitment = commitSecret('zylo:governor:v1', privateState.governorSecret);
-
-      const compiledContract = CompiledContract.withCompiledFileAssets(
-        CompiledContract.withWitnesses(
-          CompiledContract.make('zylo-vault', Contract as never),
-          witnesses as never,
-        ),
-        PROVIDER_CONFIG.zkConfig as never,
-      );
 
       const deployed = await (deployContract as never as (p: unknown, o: unknown) => Promise<unknown>)(
         providers,
         {
           compiledContract,
-          privateStateId: 'zylo-vault',
+          privateStateId: PRIVATE_STATE_ID,
           initialPrivateState: privateState,
           args: [governorCommitment],
         },

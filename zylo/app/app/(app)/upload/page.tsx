@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { Button, Card, CardHead, KV, Mono, Notice } from '../../src/components/ui';
 import { addListing } from '../../src/midnight/store';
 import { ensureSecrets } from '../../src/midnight/secrets';
+import { useWallet } from '../../src/midnight/wallet';
+import { connectVault } from '../../src/midnight/contract';
 import { JOB_CLASS, JOB_CLASS_LABELS, formatBytes } from '../../src/utils/constants';
 
 type Stage = 'idle' | 'hashing' | 'encrypting' | 'registering' | 'done';
@@ -19,6 +21,7 @@ const STAGE_COPY: Record<Stage, string> = {
 
 export default function UploadPage() {
   const router = useRouter();
+  const { api } = useWallet();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('0.5');
@@ -37,7 +40,7 @@ export default function UploadPage() {
     try {
       setStage('hashing');
       const bytes = new Uint8Array(await file.arrayBuffer());
-      const text = new TextDecoder().decode(bytes.subarray(0, 64 * 1024));
+      const text = new TextDecoder().decode(bytes);
       const header = text.split(/\r?\n/)[0] ?? '';
       const schema = header.split(',').map((c) => c.trim()).filter(Boolean);
       if (schema.length === 0) throw new Error('Could not read a CSV header from that file.');
@@ -50,21 +53,32 @@ export default function UploadPage() {
 
       setStage('registering');
       const secrets = ensureSecrets();
+      const { datasetIdOf, hexToBytes } = await import('@zylo/crypto/commitments');
       const toHex = (b: Uint8Array) => [...b].map((x) => x.toString(16).padStart(2, '0')).join('');
       const rootHex = toHex(sealed.root);
-      const idSource = new TextEncoder().encode(`${secrets.ownerSecret}:${rootHex}`);
-      const datasetId = toHex(new Uint8Array(await crypto.subtle.digest('SHA-256', idSource)));
+      const datasetId = toHex(datasetIdOf(sealed.root, hexToBytes(secrets.ownerSecret)));
+      const termsHash = new Uint8Array(
+        await crypto.subtle.digest('SHA-256', new TextEncoder().encode(schema.join(','))),
+      );
+      const priceAtomic = BigInt(Math.round(Number(price) * 1_000_000));
+      const budgetValue = BigInt(Math.max(1, Math.round(Number(budget))));
+
+      const vault = await connectVault(api as never);
+      await vault.callTx.registerDataset(
+        sealed.root,
+        termsHash,
+        priceAtomic,
+        BigInt(rows),
+        BigInt(classes),
+        budgetValue,
+      );
 
       addListing({
         datasetId,
         datasetRoot: rootHex,
         ownerCommitment: datasetId.slice(0, 32),
-        termsHash: toHex(
-          new Uint8Array(
-            await crypto.subtle.digest('SHA-256', new TextEncoder().encode(schema.join(','))),
-          ),
-        ),
-        price: BigInt(Math.round(Number(price) * 1_000_000)),
+        termsHash: toHex(termsHash),
+        price: priceAtomic,
         rows: BigInt(rows),
         jobClasses: classes,
         schema,
@@ -91,7 +105,7 @@ export default function UploadPage() {
       setStage('idle');
       setError(cause instanceof Error ? cause.message : 'Publishing failed.');
     }
-  }, [file, title, price, classes, router]);
+  }, [api, budget, classes, file, price, router, title]);
 
   const busy = stage !== 'idle' && stage !== 'done';
 
