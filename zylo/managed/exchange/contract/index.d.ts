@@ -6,8 +6,8 @@ export type Witnesses<PS> = {
   governorSecret(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, Uint8Array];
   attestationNonce(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, __compactRuntime.JubjubPoint];
   attestationScalar(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
-  challengeLow(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
-  challengeHigh(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
+  attestationChallenge(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
+  attestationChallengeQuotient(context: __compactRuntime.WitnessContext<Ledger, PS>): [PS, bigint];
 }
 
 export type ImpureCircuits<PS> = {

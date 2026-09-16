@@ -341,11 +341,11 @@ export class Contract {
     if (typeof(witnesses_0.attestationScalar) !== 'function') {
       throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named attestationScalar');
     }
-    if (typeof(witnesses_0.challengeLow) !== 'function') {
-      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named challengeLow');
+    if (typeof(witnesses_0.attestationChallenge) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named attestationChallenge');
     }
-    if (typeof(witnesses_0.challengeHigh) !== 'function') {
-      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named challengeHigh');
+    if (typeof(witnesses_0.attestationChallengeQuotient) !== 'function') {
+      throw new __compactRuntime.CompactError('first (witnesses) argument to Contract constructor does not contain a function-valued field named attestationChallengeQuotient');
     }
     this.witnesses = witnesses_0;
     this.circuits = {
@@ -363,49 +363,49 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(termsHash_0.buffer instanceof ArrayBuffer && termsHash_0.BYTES_PER_ELEMENT === 1 && termsHash_0.length === 32)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Bytes<32>',
                                      termsHash_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(rows_0) === 'bigint' && rows_0 >= 0n && rows_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Uint<0..18446744073709551616>',
                                      rows_0)
         }
         if (!(typeof(jobClasses_0) === 'bigint' && jobClasses_0 >= 0n && jobClasses_0 <= 255n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Uint<0..256>',
                                      jobClasses_0)
         }
         if (!(typeof(budget_0) === 'bigint' && budget_0 >= 0n && budget_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('registerDataset',
                                      'argument 6 (argument 7 as invoked from Typescript)',
-                                     'exchange.compact line 92 char 1',
+                                     'exchange.compact line 84 char 1',
                                      'Uint<0..18446744073709551616>',
                                      budget_0)
         }
@@ -443,42 +443,42 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetId_0.buffer instanceof ArrayBuffer && datasetId_0.BYTES_PER_ELEMENT === 1 && datasetId_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'Bytes<32>',
                                      datasetId_0)
         }
         if (!(typeof(price_0) === 'bigint' && price_0 >= 0n && price_0 <= 18446744073709551615n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'Uint<0..18446744073709551616>',
                                      price_0)
         }
         if (!(typeof(path_0) === 'object' && path_0.leaf.buffer instanceof ArrayBuffer && path_0.leaf.BYTES_PER_ELEMENT === 1 && path_0.leaf.length === 32 && Array.isArray(path_0.path) && path_0.path.length === 12 && path_0.path.every((t) => typeof(t) === 'object' && typeof(t.sibling) === 'object' && typeof(t.sibling.field) === 'bigint' && t.sibling.field >= 0 && t.sibling.field <= __compactRuntime.MAX_FIELD && typeof(t.goes_left) === 'boolean'))) {
           __compactRuntime.typeError('requestJob',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'struct MerkleTreePath<leaf: Bytes<32>, path: Vector<12, struct MerkleTreePathEntry<sibling: struct MerkleTreeDigest<field: Field>, goes_left: Boolean>>>',
                                      path_0)
         }
         if (!(specCommitment_0.buffer instanceof ArrayBuffer && specCommitment_0.BYTES_PER_ELEMENT === 1 && specCommitment_0.length === 32)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 4 (argument 5 as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'Bytes<32>',
                                      specCommitment_0)
         }
         if (!(typeof(escrow_0) === 'object' && escrow_0.nonce.buffer instanceof ArrayBuffer && escrow_0.nonce.BYTES_PER_ELEMENT === 1 && escrow_0.nonce.length === 32 && escrow_0.color.buffer instanceof ArrayBuffer && escrow_0.color.BYTES_PER_ELEMENT === 1 && escrow_0.color.length === 32 && typeof(escrow_0.value) === 'bigint' && escrow_0.value >= 0n && escrow_0.value <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('requestJob',
                                      'argument 5 (argument 6 as invoked from Typescript)',
-                                     'exchange.compact line 126 char 1',
+                                     'exchange.compact line 118 char 1',
                                      'struct ShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>>',
                                      escrow_0)
         }
@@ -512,14 +512,14 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 170 char 1',
+                                     'exchange.compact line 162 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('grantAccess',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 170 char 1',
+                                     'exchange.compact line 162 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
@@ -551,21 +551,21 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 183 char 1',
+                                     'exchange.compact line 175 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(jobId_0.buffer instanceof ArrayBuffer && jobId_0.BYTES_PER_ELEMENT === 1 && jobId_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 183 char 1',
+                                     'exchange.compact line 175 char 1',
                                      'Bytes<32>',
                                      jobId_0)
         }
         if (!(resultCommitment_0.buffer instanceof ArrayBuffer && resultCommitment_0.BYTES_PER_ELEMENT === 1 && resultCommitment_0.length === 32)) {
           __compactRuntime.typeError('settleJob',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 183 char 1',
+                                     'exchange.compact line 175 char 1',
                                      'Bytes<32>',
                                      resultCommitment_0)
         }
@@ -598,28 +598,28 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 214 char 1',
+                                     'exchange.compact line 206 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
         if (!(datasetRoot_0.buffer instanceof ArrayBuffer && datasetRoot_0.BYTES_PER_ELEMENT === 1 && datasetRoot_0.length === 32)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 1 (argument 2 as invoked from Typescript)',
-                                     'exchange.compact line 214 char 1',
+                                     'exchange.compact line 206 char 1',
                                      'Bytes<32>',
                                      datasetRoot_0)
         }
         if (!(typeof(coin_0) === 'object' && coin_0.nonce.buffer instanceof ArrayBuffer && coin_0.nonce.BYTES_PER_ELEMENT === 1 && coin_0.nonce.length === 32 && coin_0.color.buffer instanceof ArrayBuffer && coin_0.color.BYTES_PER_ELEMENT === 1 && coin_0.color.length === 32 && typeof(coin_0.value) === 'bigint' && coin_0.value >= 0n && coin_0.value <= 340282366920938463463374607431768211455n && typeof(coin_0.mt_index) === 'bigint' && coin_0.mt_index >= 0n && coin_0.mt_index <= 18446744073709551615n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 2 (argument 3 as invoked from Typescript)',
-                                     'exchange.compact line 214 char 1',
+                                     'exchange.compact line 206 char 1',
                                      'struct QualifiedShieldedCoinInfo<nonce: Bytes<32>, color: Bytes<32>, value: Uint<0..340282366920938463463374607431768211456>, mt_index: Uint<0..18446744073709551616>>',
                                      coin_0)
         }
         if (!(typeof(amount_0) === 'bigint' && amount_0 >= 0n && amount_0 <= 340282366920938463463374607431768211455n)) {
           __compactRuntime.typeError('claimEarnings',
                                      'argument 3 (argument 4 as invoked from Typescript)',
-                                     'exchange.compact line 214 char 1',
+                                     'exchange.compact line 206 char 1',
                                      'Uint<0..340282366920938463463374607431768211456>',
                                      amount_0)
         }
@@ -650,7 +650,7 @@ export class Contract {
         if (!(typeof(contextOrig_0) === 'object' && contextOrig_0.currentQueryContext != undefined)) {
           __compactRuntime.typeError('allowlistEnclave',
                                      'argument 1 (as invoked from Typescript)',
-                                     'exchange.compact line 245 char 1',
+                                     'exchange.compact line 237 char 1',
                                      'CircuitContext',
                                      contextOrig_0)
         }
@@ -1234,12 +1234,12 @@ export class Contract {
     });
     return result_0;
   }
-  _challengeLow_0(context, partialProofData) {
+  _attestationChallenge_0(context, partialProofData) {
     const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
-    const [nextPrivateState_0, result_0] = this.witnesses.challengeLow(witnessContext_0);
+    const [nextPrivateState_0, result_0] = this.witnesses.attestationChallenge(witnessContext_0);
     context.currentPrivateState = nextPrivateState_0;
     if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
-      __compactRuntime.typeError('challengeLow',
+      __compactRuntime.typeError('attestationChallenge',
                                  'return value',
                                  'exchange.compact line 44 char 1',
                                  'Field',
@@ -1251,12 +1251,12 @@ export class Contract {
     });
     return result_0;
   }
-  _challengeHigh_0(context, partialProofData) {
+  _attestationChallengeQuotient_0(context, partialProofData) {
     const witnessContext_0 = __compactRuntime.createWitnessContext(ledger(context.currentQueryContext.state), context.currentPrivateState, context.currentQueryContext.address);
-    const [nextPrivateState_0, result_0] = this.witnesses.challengeHigh(witnessContext_0);
+    const [nextPrivateState_0, result_0] = this.witnesses.attestationChallengeQuotient(witnessContext_0);
     context.currentPrivateState = nextPrivateState_0;
     if (!(typeof(result_0) === 'bigint' && result_0 >= 0 && result_0 <= __compactRuntime.MAX_FIELD)) {
-      __compactRuntime.typeError('challengeHigh',
+      __compactRuntime.typeError('attestationChallengeQuotient',
                                  'return value',
                                  'exchange.compact line 45 char 1',
                                  'Field',
@@ -1285,28 +1285,28 @@ export class Contract {
     const hash_0 = this._transientHash_0({ nonce: nonce_0,
                                            key: key_0,
                                            message: message_0 });
-    const low_0 = ((t1) => {
-                    if (t1 > 340282366920938463463374607431768211455n) {
-                      throw new __compactRuntime.CompactError('exchange.compact line 78 char 15: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
-                    }
-                    return t1;
-                  })(this._challengeLow_0(context, partialProofData));
-    const high_0 = ((t1) => {
-                     if (t1 > 340282366920938463463374607431768211455n) {
-                       throw new __compactRuntime.CompactError('exchange.compact line 79 char 16: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
-                     }
-                     return t1;
-                   })(this._challengeHigh_0(context, partialProofData));
+    const challenge_0 = this._attestationChallenge_0(context, partialProofData);
+    const quotient_0 = this._attestationChallengeQuotient_0(context,
+                                                            partialProofData);
+    let t_0;
+    __compactRuntime.assert((t_0 = ((t1) => {
+                                     if (t1 > 255n) {
+                                       throw new __compactRuntime.CompactError('exchange.compact line 75 char 11: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 255');
+                                     }
+                                     return t1;
+                                   })(quotient_0),
+                             t_0 <= 8n),
+                            'challenge quotient out of range');
     __compactRuntime.assert(hash_0
                             ===
-                            __compactRuntime.addField(__compactRuntime.mulField(high_0,
-                                                                                340282366920938463463374607431768211456n),
-                                                      low_0),
-                            'challenge decomposition does not match the hash');
+                            __compactRuntime.addField(challenge_0,
+                                                      __compactRuntime.mulField(quotient_0,
+                                                                                6554484396890773809930967563523245729705921265872317281365359162392183254199n)),
+                            'challenge not reduced');
     __compactRuntime.assert(this._equal_2(this._ecMulGenerator_0(s_0),
                                           this._ecAdd_0(nonce_0,
                                                         this._ecMul_0(key_0,
-                                                                      low_0))),
+                                                                      challenge_0))),
                             'bad attestation');
     return [];
   }
@@ -1767,7 +1767,7 @@ export class Contract {
     const tmp_3 = job_0.payoutCommitment;
     const tmp_4 = ((t1) => {
                     if (t1 > 340282366920938463463374607431768211455n) {
-                      throw new __compactRuntime.CompactError('exchange.compact line 204 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
+                      throw new __compactRuntime.CompactError('exchange.compact line 196 char 59: cast from Field or Uint value to smaller Uint value failed: ' + t1 + ' is greater than 340282366920938463463374607431768211455');
                     }
                     return t1;
                   })(previous_0 + job_0.escrow);
@@ -2722,8 +2722,8 @@ const _dummyContract = new Contract({
   governorSecret: (...args) => undefined,
   attestationNonce: (...args) => undefined,
   attestationScalar: (...args) => undefined,
-  challengeLow: (...args) => undefined,
-  challengeHigh: (...args) => undefined
+  attestationChallenge: (...args) => undefined,
+  attestationChallengeQuotient: (...args) => undefined
 });
 export const pureCircuits = {};
 export const contractReferenceLocations =

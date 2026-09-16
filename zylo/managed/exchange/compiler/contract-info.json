@@ -374,7 +374,7 @@
       }
     },
     {
-      "name": "challengeLow",
+      "name": "attestationChallenge",
       "arguments": [
       ],
       "result type": {
@@ -382,7 +382,7 @@
       }
     },
     {
-      "name": "challengeHigh",
+      "name": "attestationChallengeQuotient",
       "arguments": [
       ],
       "result type": {

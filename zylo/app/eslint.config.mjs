@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Generated ZK artifacts copied from managed/exchange.
+    "public/zk/**",
   ]),
 ]);
 

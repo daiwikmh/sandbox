@@ -24,7 +24,7 @@ process.stdout.write(`balance  ${total}\n`);
 
 if (total === 0n) {
   process.stdout.write(
-    '\nThis wallet has no tDUST. Fund it at https://faucet.preprod.midnight.network/\n' +
+    '\nThis wallet has no tDUST. Fund it at https://faucet.preview.midnight.network/\n' +
       'then run `npm run deploy` again.\n\n',
   );
   await (wallet as { close: () => Promise<void> }).close();

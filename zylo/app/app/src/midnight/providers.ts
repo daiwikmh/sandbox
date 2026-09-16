@@ -10,6 +10,13 @@ import {
 
 export const CONTRACT_CONFIGURED = EXCHANGE_ADDRESS.length > 0;
 
+// Lace speaks hex over the connector.
+const toHex = (bytes: Uint8Array): string =>
+  Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+
+const fromHex = (hex: string): Uint8Array =>
+  Uint8Array.from(hex.match(/../g) ?? [], (pair) => parseInt(pair, 16));
+
 /**
  * Provider wiring for midnight-js.
  *
@@ -23,6 +30,8 @@ export type ProviderBundle = {
   readonly proofProvider: unknown;
   readonly zkConfigProvider: unknown;
   readonly privateStateProvider: unknown;
+  readonly walletProvider: unknown;
+  readonly midnightProvider: unknown;
 };
 
 export const PROVIDER_CONFIG = {
@@ -35,30 +44,44 @@ export const PROVIDER_CONFIG = {
   contract: EXCHANGE_ADDRESS,
 } as const;
 
-const ACCOUNT_ID = 'zylo';
+export async function connectProviders(api: {
+  balanceUnsealedTransaction: (tx: string, o?: { payFees?: boolean }) => Promise<{ tx: string }>;
+  submitTransaction: (tx: string) => Promise<void>;
+  getShieldedAddresses: () => Promise<{
+    shieldedCoinPublicKey: string;
+    shieldedEncryptionPublicKey: string;
+  }>;
+}): Promise<ProviderBundle> {
+  const [
+    { indexerPublicDataProvider },
+    { httpClientProofProvider },
+    { FetchZkConfigProvider },
+    { levelPrivateStateProvider },
+    { setNetworkId },
+    { Transaction },
+  ] = await Promise.all([
+    import('@midnight-ntwrk/midnight-js-indexer-public-data-provider'),
+    import('@midnight-ntwrk/midnight-js-http-client-proof-provider'),
+    import('@midnight-ntwrk/midnight-js-fetch-zk-config-provider'),
+    import('@midnight-ntwrk/midnight-js-level-private-state-provider'),
+    import('@midnight-ntwrk/midnight-js-network-id'),
+    import('@midnight-ntwrk/midnight-js-protocol/ledger'),
+  ]);
 
-/**
- * Local-only encryption for the private state store. The secrets it protects are
- * also exportable from Settings, which is the real backup path.
- */
-const PASSWORD_PROVIDER = async (): Promise<string> => 'zylo-local-state';
+  setNetworkId(NETWORK_ID);
 
-export async function connectProviders(): Promise<ProviderBundle> {
-  if (!CONTRACT_CONFIGURED) {
-    throw new Error(
-      'No contract address configured. Set NEXT_PUBLIC_EXCHANGE_ADDRESS once the exchange is deployed.',
-    );
-  }
+  // FetchZkConfigProvider resolves artifact paths with `new URL(path, base)`,
+  // which throws on a relative base like "/zk".
+  const zkBase = /^https?:\/\//.test(ZK_CONFIG_URL)
+    ? ZK_CONFIG_URL
+    : new URL(ZK_CONFIG_URL, window.location.origin).toString();
 
-  const [{ indexerPublicDataProvider }, { httpClientProofProvider }, { FetchZkConfigProvider }, { levelPrivateStateProvider }] =
-    await Promise.all([
-      import('@midnight-ntwrk/midnight-js-indexer-public-data-provider'),
-      import('@midnight-ntwrk/midnight-js-http-client-proof-provider'),
-      import('@midnight-ntwrk/midnight-js-fetch-zk-config-provider'),
-      import('@midnight-ntwrk/midnight-js-level-private-state-provider'),
-    ]);
-
-  const zkConfigProvider = new FetchZkConfigProvider(ZK_CONFIG_URL);
+  // cross-fetch's browser build hands back a fetch that rejects the provider
+  // as its receiver; call it through the window instead.
+  const zkConfigProvider = new FetchZkConfigProvider(zkBase, (input, init) =>
+    fetch(input, init),
+  );
+  const keys = await api.getShieldedAddresses();
 
   return {
     publicDataProvider: indexerPublicDataProvider(INDEXER_URL, INDEXER_WS_URL),
@@ -66,8 +89,28 @@ export async function connectProviders(): Promise<ProviderBundle> {
     zkConfigProvider,
     privateStateProvider: levelPrivateStateProvider({
       privateStateStoreName: 'zylo-exchange',
-      accountId: ACCOUNT_ID,
-      privateStoragePasswordProvider: PASSWORD_PROVIDER,
+      accountId: keys.shieldedCoinPublicKey.slice(0, 16),
+      privateStoragePasswordProvider: async () => 'zylo-local-state',
     }),
-  };
+    walletProvider: {
+      getCoinPublicKey: () => keys.shieldedCoinPublicKey,
+      getEncryptionPublicKey: () => keys.shieldedEncryptionPublicKey,
+      balanceTx: async (tx: { serialize: () => Uint8Array }) => {
+        const { tx: balanced } = await api.balanceUnsealedTransaction(toHex(tx.serialize()), {
+          payFees: true,
+        });
+        return Transaction.deserialize('signature', 'proof', 'binding', fromHex(balanced));
+      },
+    },
+    midnightProvider: {
+      submitTx: async (tx: { serialize: () => Uint8Array; identifiers: () => string[] }) => {
+        await api.submitTransaction(toHex(tx.serialize()));
+        const [identifier] = tx.identifiers();
+        if (identifier === undefined) {
+          throw new Error('Wallet returned a transaction with no identifier to watch for.');
+        }
+        return identifier;
+      },
+    },
+  } as never as ProviderBundle;
 }

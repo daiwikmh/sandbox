@@ -3,10 +3,10 @@ import { WalletBuilder } from '@midnight-ntwrk/wallet';
 import { NetworkId } from '@midnight-ntwrk/zswap';
 
 export const ENDPOINTS = {
-  indexer: process.env.INDEXER_URL ?? 'https://indexer.preprod.midnight.network/api/v4/graphql',
-  indexerWs: process.env.INDEXER_WS_URL ?? 'wss://indexer.preprod.midnight.network/api/v4/graphql/ws',
+  indexer: process.env.INDEXER_URL ?? 'https://indexer.preview.midnight.network/api/v4/graphql',
+  indexerWs: process.env.INDEXER_WS_URL ?? 'wss://indexer.preview.midnight.network/api/v4/graphql/ws',
   proofServer: process.env.PROOF_SERVER_URL ?? 'http://127.0.0.1:6300',
-  node: process.env.NODE_URL ?? 'https://rpc.preprod.midnight.network',
+  node: process.env.NODE_URL ?? 'https://rpc.preview.midnight.network',
 } as const;
 
 const SEED_FILE = new URL('../.env.deploy', import.meta.url).pathname;

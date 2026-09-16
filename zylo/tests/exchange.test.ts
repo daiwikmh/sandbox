@@ -46,12 +46,7 @@ function jobId(): Uint8Array {
 
 async function signFor(message: Uint8Array, kp = enclave, nonceSeed = 555n): Promise<void> {
   const sig = signAttestation(kp, message, nonceSeed);
-  sim.patch({
-    attestationNonce: sig.nonce,
-    attestationScalar: sig.scalar,
-    challengeLow: sig.low,
-    challengeHigh: sig.high,
-  });
+  sim.patch({ attestationNonce: sig.nonce, attestationScalar: sig.scalar });
 }
 
 async function runToSettled(): Promise<void> {
@@ -179,7 +174,7 @@ describe('grantAccess', () => {
   it('rejects a signature over a different job', async () => {
     await signFor(bytes(123));
     await expect(sim.grantAccess(jobId(), enclave.publicKey))
-      .rejects.toThrow(/bad attestation|challenge decomposition/);
+      .rejects.toThrow(/bad attestation/);
   });
 
   it('rejects granting access twice', async () => {
@@ -225,7 +220,7 @@ describe('settleJob', () => {
     await sim.grantAccess(jobId(), enclave.publicKey);
     await signFor(bytes(99));
     await expect(sim.settleJob(jobId(), RESULT, enclave.publicKey))
-      .rejects.toThrow(/bad attestation|challenge decomposition/);
+      .rejects.toThrow(/bad attestation/);
   });
 
   it('accumulates across two jobs on the same dataset', async () => {

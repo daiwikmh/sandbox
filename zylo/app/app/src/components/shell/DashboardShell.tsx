@@ -16,6 +16,7 @@ const TABS = [
   { id: 'compute', label: 'Compute', icon: '↗', meta: 'Buy an answer' },
   { id: 'earnings', label: 'Earnings', icon: '◈', meta: 'Claim your tDUST' },
   { id: 'settings', label: 'Settings', icon: '⚙', meta: 'Wallet and limits' },
+  { id: 'deploy', label: 'Deploy', icon: '◆', meta: 'Publish the contract' },
 ] as const;
 
 export const DashboardShell = ({ children }: { children: ReactNode }) => {

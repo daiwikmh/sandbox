@@ -1,6 +1,7 @@
 import {
   type CircuitContext,
   type JubjubPoint,
+  ChargedState,
   CompactTypeBytes,
   CompactTypeField,
   CompactTypeJubjubPoint,
@@ -19,6 +20,7 @@ import {
 import { Contract, type Ledger, ledger } from '../managed/exchange/contract/index.js';
 import {
   type Keypair,
+  challengeParts,
   fingerprint,
   keypairFromSeed,
   sign,
@@ -32,8 +34,8 @@ export type PrivateState = {
   readonly governorSecret: Uint8Array;
   readonly attestationNonce: JubjubPoint;
   readonly attestationScalar: bigint;
-  readonly challengeLow: bigint;
-  readonly challengeHigh: bigint;
+  readonly attestationChallenge: bigint;
+  readonly attestationChallengeQuotient: bigint;
 };
 
 export const witnesses = {
@@ -47,10 +49,10 @@ export const witnesses = {
     [ctx.privateState, ctx.privateState.attestationNonce],
   attestationScalar: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
     [ctx.privateState, ctx.privateState.attestationScalar],
-  challengeLow: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
-    [ctx.privateState, ctx.privateState.challengeLow],
-  challengeHigh: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
-    [ctx.privateState, ctx.privateState.challengeHigh],
+  attestationChallenge: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
+    [ctx.privateState, ctx.privateState.attestationChallenge],
+  attestationChallengeQuotient: (ctx: { privateState: PrivateState }): [PrivateState, bigint] =>
+    [ctx.privateState, ctx.privateState.attestationChallengeQuotient],
 };
 
 const V1_FIELD = new CompactTypeVector(1, CompactTypeField);
@@ -63,19 +65,13 @@ export function bytes(fill: number): Uint8Array {
   return new Uint8Array(32).fill(fill);
 }
 
-export function tag(text: string): Uint8Array {
-  const out = new Uint8Array(32);
-  out.set(new TextEncoder().encode(text));
-  return out;
-}
+export { tag, commitSecret, datasetIdOf } from '../crypto/commitments.js';
+import { tag, commitSecret, datasetIdOf } from '../crypto/commitments.js';
 
 export function priceTag(price: bigint): Uint8Array {
   return persistentHash(V1_FIELD, [price]);
 }
 
-export function datasetIdOf(datasetRoot: Uint8Array, secret: Uint8Array): Uint8Array {
-  return persistentHash(V3_BYTES, [tag('zylo:dataset:v1'), secret, datasetRoot]);
-}
 
 export function listingLeaf(datasetId: Uint8Array, price: bigint): Uint8Array {
   return persistentHash(V3_BYTES, [tag('zylo:listing:v1'), datasetId, priceTag(price)]);
@@ -85,9 +81,6 @@ export function jobIdOf(buyerSecret: Uint8Array, specCommitment: Uint8Array): Ui
   return persistentHash(V3_BYTES, [tag('zylo:job:v1'), buyerSecret, specCommitment]);
 }
 
-export function commitSecret(domain: string, secret: Uint8Array): Uint8Array {
-  return persistentHash(V2_BYTES, [tag(domain), secret]);
-}
 
 export function payoutCommitmentOf(datasetId: Uint8Array): Uint8Array {
   return persistentHash(V2_BYTES, [tag('zylo:accrue:v1'), datasetId]);
@@ -122,10 +115,10 @@ export class ExchangeSimulator {
       governorSecret,
       attestationNonce: ecMulGenerator(1n),
       attestationScalar: 0n,
-      challengeLow: 0n,
-      challengeHigh: 0n,
+      attestationChallenge: 0n,
+      attestationChallengeQuotient: 0n,
     };
-    const { currentContractState, currentPrivateState } = contract.initialState(
+    const { currentContractState, currentPrivateState } = await contract.initialState(
       createConstructorContext(privateState, COIN_PUBLIC_KEY) as ConstructorContext<PrivateState>,
       commitSecret('zylo:governor:v1', governorSecret),
     );
@@ -156,7 +149,7 @@ export class ExchangeSimulator {
   private commit(context: CircuitContext<PrivateState>): void {
     this.privateState = context.currentPrivateState as PrivateState;
     const next = new ContractState();
-    next.data = context.currentQueryContext.state;
+    next.data = new ChargedState(context.currentQueryContext.state.state);
     this.contractState = next;
   }
 
@@ -197,6 +190,11 @@ export class ExchangeSimulator {
   }
 
   async grantAccess(jobId: Uint8Array, key: JubjubPoint): Promise<void> {
+    const grantParts = challengeParts(this.privateState.attestationNonce, key, jobId);
+    this.patch({
+      attestationChallenge: grantParts.challenge,
+      attestationChallengeQuotient: grantParts.quotient,
+    });
     const { context } = await this.contract.impureCircuits.grantAccess(
       this.context(), jobId, key,
     );
@@ -208,6 +206,11 @@ export class ExchangeSimulator {
     resultCommitment: Uint8Array,
     key: JubjubPoint,
   ): Promise<void> {
+    const settleParts = challengeParts(this.privateState.attestationNonce, key, resultCommitment);
+    this.patch({
+      attestationChallenge: settleParts.challenge,
+      attestationChallengeQuotient: settleParts.quotient,
+    });
     const { context } = await this.contract.impureCircuits.settleJob(
       this.context(), jobId, resultCommitment, key,
     );

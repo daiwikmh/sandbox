@@ -13,14 +13,16 @@
     "cap:android": "node node_modules/@capacitor/cli/bin/capacitor open android",
     "mobile:setup": "npm run cap:sync && echo 'Mobile platforms synced. Now run: npm run cap:ios OR npm run cap:android'",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "zk": "rm -rf public/zk && mkdir -p public/zk && cp -r ../managed/exchange/keys ../managed/exchange/zkir ../managed/exchange/compiler public/zk/"
   },
   "dependencies": {
     "@capacitor/android": "^8.0.1",
     "@capacitor/cli": "^8.0.1",
     "@capacitor/core": "^8.0.1",
     "@capacitor/ios": "^8.0.1",
-    "@midnight-ntwrk/compact-runtime": "^0.19.0",
+    "@midnight-ntwrk/compact-js": "^2.5.1",
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
     "@midnight-ntwrk/dapp-connector-api": "^4.0.1",
     "@midnight-ntwrk/midnight-js-contracts": "^4.1.1",
     "@midnight-ntwrk/midnight-js-fetch-zk-config-provider": "^4.1.1",
@@ -28,6 +30,7 @@
     "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.1.1",
     "@midnight-ntwrk/midnight-js-level-private-state-provider": "^4.1.1",
     "@midnight-ntwrk/midnight-js-network-id": "^4.1.1",
+    "@midnight-ntwrk/midnight-js-protocol": "^4.1.1",
     "@midnight-ntwrk/midnight-js-types": "^4.1.1",
     "next": "16.1.1",
     "react": "19.2.3",

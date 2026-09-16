@@ -41,8 +41,8 @@ witness buyerSecret(): Bytes<32>;
 witness governorSecret(): Bytes<32>;
 witness attestationNonce(): JubjubPoint;
 witness attestationScalar(): Field;
-witness challengeLow(): Field;
-witness challengeHigh(): Field;
+witness attestationChallenge(): Field;
+witness attestationChallengeQuotient(): Field;
 
 constructor(governorCommitment: Bytes<32>) {
   governor = disclose(governorCommitment);
@@ -64,25 +64,17 @@ circuit datasetIdOf(datasetRoot: Bytes<32>, secret: Bytes<32>): Bytes<32> {
   );
 }
 
-// The hash is 255 bits but a Jubjub scalar must stay under the curve order, and
-// language 0.23 has no reducing cast. The prover supplies the 128/128 split and
-// the circuit range-checks both halves, so the decomposition is unique and the
-// low half is a sound 128-bit Fiat-Shamir challenge.
 circuit verifyAttestation(key: JubjubPoint, message: Bytes<32>): [] {
   const nonce = attestationNonce();
   const s = attestationScalar();
   const hash = transientHash<Attestation>(
     Attestation { nonce: nonce, key: key, message: message }
   );
-
-  const low = challengeLow() as Uint<128>;
-  const high = challengeHigh() as Uint<128>;
-  assert(
-    hash == (high as Field) * 340282366920938463463374607431768211456 + (low as Field),
-    "challenge decomposition does not match the hash"
-  );
-
-  assert(ecMulGenerator(s) == ecAdd(nonce, ecMul(key, low as Field)), "bad attestation");
+  const challenge = attestationChallenge();
+  const quotient = attestationChallengeQuotient();
+  assert((quotient as Uint<8>) <= 8, "challenge quotient out of range");
+  assert(hash == challenge + quotient * (6554484396890773809930967563523245729705921265872317281365359162392183254199 as Field), "challenge not reduced");
+  assert(ecMulGenerator(s) == ecAdd(nonce, ecMul(key, challenge)), "bad attestation");
 }
 
 circuit enclaveFingerprint(key: JubjubPoint): Bytes<32> {

@@ -3,6 +3,7 @@ const STORAGE_KEY = 'zylo-secrets-v1';
 export type Secrets = {
   readonly ownerSecret: string;
   readonly buyerSecret: string;
+  readonly governorSecret: string;
 };
 
 function randomHex(): string {
@@ -31,8 +32,21 @@ export function loadSecrets(): Secrets | null {
 
 export function ensureSecrets(): Secrets {
   const existing = loadSecrets();
-  if (existing !== null) return existing;
-  const created: Secrets = { ownerSecret: randomHex(), buyerSecret: randomHex() };
+  if (existing !== null && typeof existing.governorSecret === 'string') return existing;
+  if (existing !== null) {
+    const upgraded: Secrets = { ...existing, governorSecret: randomHex() };
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(upgraded));
+    } catch {
+      /* caller surfaces the backup warning */
+    }
+    return upgraded;
+  }
+  const created: Secrets = {
+    ownerSecret: randomHex(),
+    buyerSecret: randomHex(),
+    governorSecret: randomHex(),
+  };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(created));
   } catch {
@@ -43,15 +57,19 @@ export function ensureSecrets(): Secrets {
 
 export function importSecrets(payload: string): Secrets {
   const parsed = JSON.parse(payload) as Partial<Secrets>;
+  const governorSecret = parsed.governorSecret ?? randomHex();
   if (typeof parsed.ownerSecret !== 'string' || typeof parsed.buyerSecret !== 'string') {
     throw new Error('That backup does not contain both secrets.');
   }
-  if (!/^[0-9a-f]{64}$/.test(parsed.ownerSecret) || !/^[0-9a-f]{64}$/.test(parsed.buyerSecret)) {
-    throw new Error('Secrets must be 32-byte hex strings.');
+  for (const value of [parsed.ownerSecret, parsed.buyerSecret, governorSecret]) {
+    if (!/^[0-9a-f]{64}$/.test(value)) {
+      throw new Error('Secrets must be 32-byte hex strings.');
+    }
   }
   const secrets: Secrets = {
     ownerSecret: parsed.ownerSecret,
     buyerSecret: parsed.buyerSecret,
+    governorSecret,
   };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(secrets));
   return secrets;

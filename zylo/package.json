@@ -13,7 +13,7 @@
     "deploy": "tsx scripts/deploy.ts"
   },
   "dependencies": {
-    "@midnight-ntwrk/compact-runtime": "^0.16.0",
+    "@midnight-ntwrk/compact-runtime": "0.16.0",
     "@midnight-ntwrk/midnight-js-contracts": "^4.1.1",
     "@midnight-ntwrk/midnight-js-http-client-proof-provider": "^4.1.1",
     "@midnight-ntwrk/midnight-js-indexer-public-data-provider": "^4.1.1",
@@ -25,6 +25,7 @@
     "@midnight-ntwrk/wallet-sdk-hd": "^3.0.2",
     "@midnight-ntwrk/zswap": "^4.0.0",
     "@types/node": "^22.20.2",
+    "afmt": "npm:@midnight-ntwrk/wallet-sdk-address-format@^4.0.0-canary.20260909152755-289030d",
     "rxjs": "^7.8.2"
   },
   "devDependencies": {

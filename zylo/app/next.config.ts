@@ -3,6 +3,9 @@ import type { NextConfig } from 'next';
 
 const ROOT = path.join(__dirname, '..');
 
+// Wasm identity requires single copy.
+const APP_MODULES = path.join(__dirname, 'node_modules');
+
 const nextConfig: NextConfig = {
   outputFileTracingRoot: ROOT,
   images: {
@@ -15,7 +18,21 @@ const nextConfig: NextConfig = {
       ...config.experiments,
       asyncWebAssembly: true,
       layers: true,
+      topLevelAwait: true,
     };
+
+    // asyncWebAssembly emits async/await; without this webpack assumes the
+    // target cannot run it and warns on every Midnight wasm module.
+    config.output = {
+      ...config.output,
+      environment: {
+        ...(config.output?.environment ?? {}),
+        asyncFunction: true,
+        dynamicImport: true,
+      },
+    };
+
+    config.resolve.modules = [APP_MODULES, ...(config.resolve.modules ?? ['node_modules'])];
 
     config.resolve.extensionAlias = {
       ...config.resolve.extensionAlias,
