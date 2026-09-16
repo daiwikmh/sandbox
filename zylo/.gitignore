@@ -7,3 +7,6 @@ coverage
 
 .env.deploy
 .deploy/
+
+# stale v9 build; recoverable from commit 7d735e2
+managed/*.v9-backup
